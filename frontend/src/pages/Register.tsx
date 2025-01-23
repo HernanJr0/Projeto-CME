@@ -12,7 +12,11 @@ const Register: React.FC = () => {
 	return (
 		<div>
 			<h1>Register</h1>
-			<AuthForm onSubmit={auth.register} buttonText="Register" />
+			<AuthForm
+				onSubmit={auth.register}
+				buttonText="Register"
+				includeEmail={true}
+			/>
 		</div>
 	);
 };

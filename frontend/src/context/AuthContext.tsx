@@ -17,6 +17,7 @@ interface AuthContextType {
 interface Credentials {
 	username: string;
 	password: string;
+	email?: string;
 }
 
 export const AuthContext = createContext<AuthContextType | undefined>(
@@ -64,6 +65,38 @@ export const AuthProvider: React.FC<{ children: ReactNode }> = ({
 		setUser(null);
 		navigate("/");
 	};
+
+	const fetchUserProfile = async () => {
+		const token = localStorage.getItem("access");
+
+		if (!token) return;
+
+		try {
+			const { data } = await api.get("profile/", {
+				headers: {
+					Authorization: `Bearer ${token}`,
+				},
+			});
+			setUser({ username: data.username });
+		} catch (error) {
+			console.error("Erro ao buscar perfil do usuário:", error);
+		}
+	};
+
+	useEffect(() => {
+		const token = localStorage.getItem("access");
+
+		if (token) {
+			try {
+				const decoded = jwtDecode<{ username: string }>(token);
+				setUser({ username: decoded.username });
+				fetchUserProfile();
+				navigate("/dashboard");
+			} catch (error) {
+				console.error("Token inválido ou expirado:", error);
+			}
+		}
+	}, [navigate]);
 
 	return (
 		<AuthContext.Provider value={{ user, login, register, logout }}>
