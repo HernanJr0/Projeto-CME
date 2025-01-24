@@ -1,7 +1,14 @@
 import React, { useContext } from "react";
 import { AuthContext } from "../context/AuthContext";
 import AuthForm from "../components/AuthForm";
-import { Card, Container, Typography } from "@mui/material";
+import {
+	Card,
+	Container,
+	IconButton,
+	Tooltip,
+	Typography,
+} from "@mui/material";
+import { InfoOutlined } from "@mui/icons-material";
 
 const Login: React.FC = () => {
 	const auth = useContext(AuthContext);
@@ -20,14 +27,30 @@ const Login: React.FC = () => {
 			}}
 		>
 			<Card sx={{ padding: 4 }}>
-				<Typography
-					variant="h4"
-					sx={{
-						marginBottom: 2,
+				<div
+					style={{
+						display: "flex",
+						justifyContent: "space-between",
+						alignItems: "center",
 					}}
 				>
-					Fazer login
-				</Typography>
+					<Typography
+						variant="h4"
+						sx={{
+							marginBottom: 2,
+						}}
+					>
+						Fazer login
+					</Typography>
+
+					<div>
+						<Tooltip title="Caso não tenha uma conta, entre em contato com o setor administrativo.">
+							<IconButton>
+								<InfoOutlined />
+							</IconButton>
+						</Tooltip>
+					</div>
+				</div>
 				<AuthForm onSubmit={auth.login} buttonText="Continuar" />
 			</Card>
 		</Container>

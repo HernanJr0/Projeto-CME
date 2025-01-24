@@ -13,6 +13,7 @@ import { IconButton, Tooltip } from "@mui/material";
 import { DarkMode, LightMode } from "@mui/icons-material";
 import { AuthProvider } from "./context/AuthProvider";
 import InternalLayout from "./components/InternalLayout";
+import UserManagement from "./pages/UserManagement";
 
 const PrivateRoute: React.FC<{ children: JSX.Element }> = ({ children }) => {
 	const auth = React.useContext(AuthContext);
@@ -40,7 +41,7 @@ const PrivateRoutes: React.FC = () => (
 		<Routes>
 			<Route path="/" element={<InternalLayout />}>
 				<Route path="dashboard" element={<Dashboard />} />
-				<Route path="users" element={<div>Users</div>} />
+				<Route path="users" element={<UserManagement />} />
 				<Route path="profile" element={<div>Profile</div>} />
 				<Route path="reports" element={<div>Reports</div>} />
 				<Route path="materials" element={<div>Materials</div>} />
@@ -62,7 +63,7 @@ const App: React.FC<AppProps> = ({ mode, setMode }) => {
 				sx={{
 					position: "fixed",
 					top: 16,
-					right: 32,
+					right: 16,
 				}}
 				title={`Mudar para o modo ${mode === "light" ? "escuro" : "claro"}`}
 			>

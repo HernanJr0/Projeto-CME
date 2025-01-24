@@ -1,15 +1,14 @@
 from rest_framework.views import APIView
 from rest_framework.response import Response
 from rest_framework import status
-from rest_framework.permissions import AllowAny
-from rest_framework.permissions import IsAuthenticated
+from rest_framework.permissions import AllowAny, IsAuthenticated
 
-from django.contrib.auth.models import User
 from django.contrib.auth.hashers import make_password
 from django.core.validators import validate_email
 from django.core.exceptions import ValidationError
 
 from app.models import CustomUser
+from app.permissions import IsAdminRole
 
 
 class RegisterView(APIView):
@@ -58,6 +57,75 @@ class UserProfileView(APIView):
     def get(self, request):
         user = request.user
         return Response({
+            "id": user.id,
             "username": user.username,
-            "email": user.email
+            "email": user.email,
+            "role": getattr(user, 'role', None),
         })
+        
+class UsersListView(APIView):
+    permission_classes = [IsAuthenticated, IsAdminRole]
+
+    def get(self, request):
+        users = CustomUser.objects.all()
+        user_data = [
+            {
+                'id': user.id,
+                'username': user.username,
+                'email': user.email,
+                'date_joined': user.date_joined,
+                'is_active': user.is_active,
+                'role': getattr(user, 'role', None),
+            }
+            for user in users
+        ]
+        return Response(user_data, status=status.HTTP_200_OK)
+    
+class UserDetailView(APIView):
+    permission_classes = [IsAuthenticated, IsAdminRole]
+    
+    def get(self, request, user_id):
+        try:
+            user = CustomUser.objects.get(id=user_id)
+        except CustomUser.DoesNotExist:
+            return Response({'error': 'Usuário não encontrado'}, status=status.HTTP_404_NOT_FOUND)
+        
+        user_data = {
+            'id': user.id,
+            'username': user.username,
+            'email': user.email,
+            'date_joined': user.date_joined,
+            'is_active': user.is_active,
+            'role': getattr(user, 'role', None),
+        }
+        
+        return Response(user_data, status=status.HTTP_200_OK)
+    
+    def patch(self, request, user_id):
+        try:
+            user = CustomUser.objects.get(id=user_id)
+        except CustomUser.DoesNotExist:
+            return Response({'error': 'Usuário não encontrado'}, status=status.HTTP_404_NOT_FOUND)
+        
+        if 'role' in request.data:
+            user.role = request.data['role']
+        
+        if 'username' in request.data:
+            user.username = request.data['username']
+        
+        if 'email' in request.data:
+            user.email = request.data['email']
+        
+        user.save()
+        
+        return Response({"message": "Usuário atualizado com sucesso"}, status=status.HTTP_200_OK)
+    
+    def delete(self, request, user_id):
+        try:
+            user = CustomUser.objects.get(id=user_id)
+        except CustomUser.DoesNotExist:
+            return Response({'error': 'Usuário não encontrado'}, status=status.HTTP_404_NOT_FOUND)
+        
+        user.delete()
+        
+        return Response({"message": "Usuário deletado com sucesso"}, status=status.HTTP_200_OK)

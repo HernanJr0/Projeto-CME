@@ -6,7 +6,10 @@ import { Snackbar, Alert } from "@mui/material";
 import { AuthContext } from "./AuthContext";
 
 interface User {
+	id?: number;
 	username: string;
+	email?: string;
+	role?: string;
 }
 
 interface Credentials {
@@ -51,7 +54,12 @@ export const AuthProvider: React.FC<{ children: ReactNode }> = ({
 			const { data } = await api.get("profile/", {
 				headers: { Authorization: `Bearer ${token}` },
 			});
-			setUser({ username: data.username });
+			setUser({
+				id: data.id,
+				username: data.username,
+				email: data.email,
+				role: data.role,
+			});
 		} catch {
 			const newToken = await refreshToken();
 			if (newToken) {
@@ -81,7 +89,6 @@ export const AuthProvider: React.FC<{ children: ReactNode }> = ({
 	const register = async (credentials: Credentials) => {
 		try {
 			await api.post("register/", credentials);
-			navigate("/");
 		} catch {
 			showErrorSnackbar("Erro ao criar conta. Verifique os dados.");
 		}

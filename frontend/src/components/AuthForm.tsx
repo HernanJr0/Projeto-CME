@@ -1,6 +1,5 @@
-import { Box, Button, Divider, TextField, Typography } from "@mui/material";
+import { Box, Button, TextField, Typography } from "@mui/material";
 import React, { useState, ChangeEvent, FormEvent } from "react";
-import { useNavigate } from "react-router-dom";
 
 interface AuthFormProps {
 	onSubmit: (formData: {
@@ -17,7 +16,7 @@ const AuthForm: React.FC<AuthFormProps> = ({
 	buttonText,
 	includeEmail = false,
 }) => {
-	const navigate = useNavigate();
+	/* const navigate = useNavigate(); */
 
 	const [formData, setFormData] = useState({
 		username: "",
@@ -90,13 +89,13 @@ const AuthForm: React.FC<AuthFormProps> = ({
 			>
 				{buttonText}
 			</Button>
-			<Divider>
+			{/* <Divider>
 				<Typography>ou</Typography>
-			</Divider>
+			</Divider> */}
 			<Box
 				sx={{ display: "flex", justifyContent: "center", alignItems: "center" }}
 			>
-				<Typography variant="caption" sx={{ marginRight: 1 }}>
+				{/* <Typography variant="caption" sx={{ marginRight: 1 }}>
 					{includeEmail ? "Já tem uma conta?" : "Não tem uma conta?"}
 				</Typography>
 				<Button
@@ -105,7 +104,7 @@ const AuthForm: React.FC<AuthFormProps> = ({
 					}}
 				>
 					{includeEmail ? "Fazer Login" : "Criar nova conta"}
-				</Button>
+				</Button> */}
 			</Box>
 		</form>
 	);
