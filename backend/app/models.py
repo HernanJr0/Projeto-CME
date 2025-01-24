@@ -1,9 +1,16 @@
+from django.contrib.auth.models import AbstractUser
 from django.db import models
 
-class User(models.Model):
-    username = models.CharField(max_length=100)
-    password = models.CharField(max_length=100)
-    email = models.EmailField(max_length=100)
+class CustomUser(AbstractUser):
+    ROLE_CHOICES = [
+        ('tecnico', 'Técnico'),
+        ('enfermeiro', 'Enfermeiro'),
+        ('administrativo', 'Administrativo'),
+    ]
     
-    def __str__(self):
-        return self.username
+    role = models.CharField(max_length=20, choices=ROLE_CHOICES, default='tecnico')
+
+    def save(self, *args, **kwargs):
+        if self.is_superuser:
+            self.role = 'administrativo'
+        super().save(*args, **kwargs)

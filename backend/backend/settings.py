@@ -33,6 +33,8 @@ ALLOWED_HOSTS = [
     if h.strip()
 ]
 
+AUTH_USER_MODEL = 'app.CustomUser'
+
 CORS_ALLOW_ALL_ORIGINS = True
 
 # Application definition
