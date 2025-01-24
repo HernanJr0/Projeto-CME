@@ -1,7 +1,8 @@
-import React, { useContext } from "react";
+import { useContext } from "react";
 import { AuthContext } from "../context/AuthContext";
+import { Box, Typography } from "@mui/material";
 
-const Dashboard: React.FC = () => {
+export default function Dashboard() {
 	const auth = useContext(AuthContext);
 
 	if (!auth) {
@@ -9,11 +10,10 @@ const Dashboard: React.FC = () => {
 	}
 
 	return (
-		<div>
-			<h1>Olá, {auth.user?.username}!</h1>
-			<button onClick={auth.logout}>Logout</button>
-		</div>
+		<Box sx={{ display: "flex" }}>
+			<Box>
+				<Typography variant="h4">Bem-vindo, {auth.user?.username}</Typography>
+			</Box>
+		</Box>
 	);
-};
-
-export default Dashboard;
+}

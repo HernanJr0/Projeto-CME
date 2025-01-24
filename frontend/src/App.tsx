@@ -6,30 +6,84 @@ import {
 	Navigate,
 } from "react-router-dom";
 import Login from "./pages/Login";
-import Register from "./pages/Register";
+// import Register from "./pages/Register";
 import Dashboard from "./pages/Dashboard";
-import { AuthContext, AuthProvider } from "./context/AuthContext";
+import { AuthContext } from "./context/AuthContext";
+import { IconButton, Tooltip } from "@mui/material";
+import { DarkMode, LightMode } from "@mui/icons-material";
+import { AuthProvider } from "./context/AuthProvider";
+import InternalLayout from "./components/InternalLayout";
 
 const PrivateRoute: React.FC<{ children: JSX.Element }> = ({ children }) => {
 	const auth = React.useContext(AuthContext);
-	return auth?.user ? children : <Navigate to="/" />;
+
+	if (!auth) {
+		throw new Error("Erro no AuthContext.");
+	}
+
+	if (auth.loading) return <div>Carregando...</div>;
+	return auth.user ? children : <Navigate to="/" />;
 };
 
-const App: React.FC = () => {
+const PublicRoute: React.FC<{ children: JSX.Element }> = ({ children }) => {
+	const auth = React.useContext(AuthContext);
+
+	if (!auth) {
+		throw new Error("Erro no AuthContext.");
+	}
+
+	return auth.user ? <Navigate to="/dashboard" /> : children;
+};
+
+const PrivateRoutes: React.FC = () => (
+	<PrivateRoute>
+		<Routes>
+			<Route path="/" element={<InternalLayout />}>
+				<Route path="dashboard" element={<Dashboard />} />
+				<Route path="users" element={<div>Users</div>} />
+				<Route path="profile" element={<div>Profile</div>} />
+				<Route path="reports" element={<div>Reports</div>} />
+				<Route path="materials" element={<div>Materials</div>} />
+				<Route path="processing" element={<div>Processing</div>} />
+			</Route>
+		</Routes>
+	</PrivateRoute>
+);
+
+interface AppProps {
+	mode: "light" | "dark";
+	setMode: React.Dispatch<React.SetStateAction<"light" | "dark">>;
+}
+
+const App: React.FC<AppProps> = ({ mode, setMode }) => {
 	return (
 		<Router>
+			<Tooltip
+				sx={{
+					position: "fixed",
+					top: 16,
+					right: 32,
+				}}
+				title={`Mudar para o modo ${mode === "light" ? "escuro" : "claro"}`}
+			>
+				<IconButton
+					onClick={() => setMode(mode === "light" ? "dark" : "light")}
+				>
+					{mode === "light" ? <DarkMode /> : <LightMode />}
+				</IconButton>
+			</Tooltip>
+
 			<AuthProvider>
 				<Routes>
-					<Route path="/" element={<Login />} />
-					<Route path="/register" element={<Register />} />
 					<Route
-						path="/dashboard"
+						path="/"
 						element={
-							<PrivateRoute>
-								<Dashboard />
-							</PrivateRoute>
+							<PublicRoute>
+								<Login />
+							</PublicRoute>
 						}
 					/>
+					<Route path="/*" element={<PrivateRoutes />} />
 				</Routes>
 			</AuthProvider>
 		</Router>

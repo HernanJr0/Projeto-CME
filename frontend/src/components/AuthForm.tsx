@@ -1,13 +1,29 @@
+import { Box, Button, Divider, TextField, Typography } from "@mui/material";
 import React, { useState, ChangeEvent, FormEvent } from "react";
+import { useNavigate } from "react-router-dom";
 
 interface AuthFormProps {
-	onSubmit: (formData: { username: string; email?: string; password: string }) => void;
+	onSubmit: (formData: {
+		username: string;
+		email?: string;
+		password: string;
+	}) => void;
 	buttonText: string;
 	includeEmail?: boolean;
 }
 
-const AuthForm: React.FC<AuthFormProps> = ({ onSubmit, buttonText, includeEmail = false }) => {
-	const [formData, setFormData] = useState({ username: "", email: "", password: "" });
+const AuthForm: React.FC<AuthFormProps> = ({
+	onSubmit,
+	buttonText,
+	includeEmail = false,
+}) => {
+	const navigate = useNavigate();
+
+	const [formData, setFormData] = useState({
+		username: "",
+		email: "",
+		password: "",
+	});
 
 	const handleChange = (e: ChangeEvent<HTMLInputElement>) => {
 		setFormData({ ...formData, [e.target.name]: e.target.value });
@@ -23,33 +39,74 @@ const AuthForm: React.FC<AuthFormProps> = ({ onSubmit, buttonText, includeEmail 
 
 	return (
 		<form onSubmit={handleSubmit}>
-			<input
+			<Typography variant="subtitle2" fontWeight={600}>
+				Nome de Usuário
+			</Typography>
+			<TextField
+				fullWidth
 				type="text"
 				name="username"
-				placeholder="Username"
 				value={formData.username}
 				onChange={handleChange}
 				required
+				sx={{ marginBottom: 2 }}
 			/>
 			{includeEmail && (
-				<input
-					type="email"
-					name="email"
-					placeholder="Email"
-					value={formData.email}
-					onChange={handleChange}
-					required
-				/>
+				<>
+					<Typography variant="subtitle2" fontWeight={600}>
+						Email
+					</Typography>
+					<TextField
+						fullWidth
+						type="email"
+						name="email"
+						value={formData.email}
+						onChange={handleChange}
+						required
+						sx={{ marginBottom: 2 }}
+					/>
+				</>
 			)}
-			<input
+			<Typography variant="subtitle2" fontWeight={600}>
+				Senha
+			</Typography>
+			<TextField
+				fullWidth
 				type="password"
 				name="password"
-				placeholder="Password"
 				value={formData.password}
 				onChange={handleChange}
 				required
 			/>
-			<button type="submit">{buttonText}</button>
+			<Button
+				type="submit"
+				variant="contained"
+				sx={{
+					marginTop: 2,
+					marginBottom: 2,
+					width: "100%",
+					padding: "0.5rem 2rem",
+				}}
+			>
+				{buttonText}
+			</Button>
+			<Divider>
+				<Typography>ou</Typography>
+			</Divider>
+			<Box
+				sx={{ display: "flex", justifyContent: "center", alignItems: "center" }}
+			>
+				<Typography variant="caption" sx={{ marginRight: 1 }}>
+					{includeEmail ? "Já tem uma conta?" : "Não tem uma conta?"}
+				</Typography>
+				<Button
+					onClick={() => {
+						navigate(includeEmail ? "/" : "/register");
+					}}
+				>
+					{includeEmail ? "Fazer Login" : "Criar nova conta"}
+				</Button>
+			</Box>
 		</form>
 	);
 };

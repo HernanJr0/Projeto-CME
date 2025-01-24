@@ -20,20 +20,20 @@ class RegisterView(APIView):
 
         if not username or not email or not password:
             return Response(
-                {'error': 'All fields (username, email, password) are required'},
+                {'error': 'Todos os campos são obrigatórios'},
                 status=status.HTTP_400_BAD_REQUEST
             )
 
         try:
             validate_email(email)
         except ValidationError:
-            return Response({'error': 'Invalid email format'}, status=status.HTTP_400_BAD_REQUEST)
+            return Response({'error': 'Formato de email inválido'}, status=status.HTTP_400_BAD_REQUEST)
 
         if User.objects.filter(username=username).exists():
-            return Response({'error': 'Username already exists'}, status=status.HTTP_400_BAD_REQUEST)
+            return Response({'error': 'O nome de usuário escolhido já está sendo usado'}, status=status.HTTP_400_BAD_REQUEST)
 
         if User.objects.filter(email=email).exists():
-            return Response({'error': 'Email already in use'}, status=status.HTTP_400_BAD_REQUEST)
+            return Response({'error': 'O email escolhido já está sendo usado'}, status=status.HTTP_400_BAD_REQUEST)
 
         user = User.objects.create(
             username=username,
@@ -41,7 +41,7 @@ class RegisterView(APIView):
             password=make_password(password),
         )
 
-        return Response({'message': 'User created successfully'}, status=status.HTTP_201_CREATED)
+        return Response({'message': 'Usuário criado com sucesso'}, status=status.HTTP_201_CREATED)
 
 class UserProfileView(APIView):
     permission_classes = [IsAuthenticated]
