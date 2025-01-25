@@ -6,7 +6,6 @@ import {
 	Navigate,
 } from "react-router-dom";
 import Login from "./pages/Login";
-// import Register from "./pages/Register";
 import Dashboard from "./pages/Dashboard";
 import { AuthContext } from "./context/AuthContext";
 import { IconButton, Tooltip } from "@mui/material";

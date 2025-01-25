@@ -19,7 +19,7 @@ const Root = () => {
 	const theme = createTheme({
 		palette: {
 			mode: mode,
-			background: { default: mode === "light" ? "#f0f0f0" : "#121212" },
+			background: { default: mode === "light" ? "#fff" : "#0f172a" },
 		},
 		typography: {
 			fontFamily: "Plus Jakarta Sans, sans-serif",
@@ -36,9 +36,14 @@ const Root = () => {
 				styleOverrides: {
 					root: {
 						borderRadius: 7,
+						backgroundColor: "transparent",
+						boxShadow:
+							mode === "light"
+								? "0px 4px 32px rgba(0, 0, 0, 0.05)"
+								: "0px 4px 32px rgba(255, 255, 255, 0.05)",
 					},
 				},
-			}
+			},
 		},
 	});
 

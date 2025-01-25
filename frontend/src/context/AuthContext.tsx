@@ -19,7 +19,7 @@ interface Credentials {
 	username: string;
 	password: string;
 	email?: string;
-	role: string;
+	role?: string;
 }
 
 export const AuthContext = createContext<AuthContextType | undefined>(

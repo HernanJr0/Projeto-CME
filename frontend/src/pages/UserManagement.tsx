@@ -1,6 +1,6 @@
 import { useContext, useEffect, useState } from "react";
 import { deleteUser, getUsers, getUser, updateUser } from "../services/user";
-import { Typography, Box, Button, CircularProgress } from "@mui/material";
+import { Typography, Box, Button, CircularProgress, Card } from "@mui/material";
 import { AuthContext } from "../context/AuthContext";
 import UserModal from "../components/UserModal";
 import { DataGrid } from "@mui/x-data-grid";
@@ -177,10 +177,10 @@ export default function UserManagement() {
 			</Box>
 
 			{!loading ? (
-				<div
-					style={{
+				<Card
+					sx={{
 						height: "calc(100vh - 20rem)",
-						width: "calc(100vw - 24rem)",
+						width: "calc(100vw - 35rem)",
 						display: "flex",
 					}}
 				>
@@ -199,12 +199,13 @@ export default function UserManagement() {
 						rowSelection={false}
 						disableRowSelectionOnClick
 						sx={{
+							borderRadius: "7px",
 							"& .MuiDataGrid-cell:focus": {
 								outline: "none",
 							},
 						}}
 					/>
-				</div>
+				</Card>
 			) : (
 				<CircularProgress sx={{ alignSelf: "center" }} />
 			)}
