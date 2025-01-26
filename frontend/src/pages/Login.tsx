@@ -44,7 +44,7 @@ const Login: React.FC = () => {
 					</Typography>
 
 					<div>
-						<Tooltip title="Caso não tenha uma conta, entre em contato com o setor administrativo.">
+						<Tooltip title="Caso não tenha uma conta, entre em contato com o setor administrativo." arrow>
 							<IconButton>
 								<InfoOutlined />
 							</IconButton>

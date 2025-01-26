@@ -2,14 +2,22 @@ from rest_framework.views import APIView
 from rest_framework.response import Response
 from rest_framework import status
 from rest_framework.permissions import AllowAny, IsAuthenticated
+from rest_framework import viewsets
+from rest_framework.decorators import action
 
 from django.contrib.auth.hashers import make_password
 from django.core.validators import validate_email
 from django.core.exceptions import ValidationError
+from django.shortcuts import get_object_or_404
 
-from app.models import CustomUser
-from app.permissions import IsAdminRole
+from app.models import CustomUser, Material, Process, Failure
+from app.serializers import MaterialSerializer, ProcessSerializer, FailureSerializer
+from app.permissions import IsAdminRole, IsTechnicianRole, IsNurseRole
 
+from django.http import HttpResponse
+from reportlab.pdfgen import canvas
+import openpyxl
+import io
 
 class RegisterView(APIView):
     permission_classes = [AllowAny]
@@ -129,3 +137,71 @@ class UserDetailView(APIView):
         user.delete()
         
         return Response({"message": "Usuário deletado com sucesso"}, status=status.HTTP_200_OK)
+
+class MaterialViewSet(viewsets.ModelViewSet):
+    permission_classes = [IsAuthenticated]
+    
+    queryset = Material.objects.all()
+    serializer_class = MaterialSerializer
+
+    @action(detail=True, methods=['get'])
+    def rastreabilidade(self, request, pk=None):
+        material = get_object_or_404(Material, pk=pk)
+        process = Process.objects.filter(material=material).order_by('start_date')
+        failure = Failure.objects.filter(material=material)
+
+        return Response({
+            "material": MaterialSerializer(material).data,
+            "process": ProcessSerializer(process, many=True).data,
+            "failures": FailureSerializer(failure, many=True).data,
+        })
+
+class ProcessViewSet(viewsets.ModelViewSet):
+    permission_classes = [IsAuthenticated]
+    
+    queryset = Process.objects.all()
+    serializer_class = ProcessSerializer
+    
+    def perform_create(self, serializer):
+        serializer.save(responsible=self.request.user)
+
+class FailureViewSet(viewsets.ModelViewSet):
+    permission_classes = [IsAuthenticated]
+    
+    queryset = Failure.objects.all()
+    serializer_class = FailureSerializer
+
+class RelatorioViewSet(viewsets.ViewSet):
+    permission_classes = [IsAuthenticated]
+    
+    @action(detail=False, methods=['get'])
+    def pdf(self, request):
+        materiais = Material.objects.all()
+        buffer = io.BytesIO()
+        p = canvas.Canvas(buffer)
+        p.drawString(100, 750, "Relatório de Materiais")
+
+        y = 700
+        for material in materiais:
+            p.drawString(100, y, f"{material.serial} - {material.nome} - {material.tipo}")
+            y -= 20
+
+        p.save()
+        buffer.seek(0)
+        return HttpResponse(buffer, content_type='application/pdf')
+
+    @action(detail=False, methods=['get'])
+    def xlsx(self, request):
+        materiais = Material.objects.all()
+        wb = openpyxl.Workbook()
+        ws = wb.active
+        ws.title = "Materiais"
+
+        ws.append(["Serial", "Nome", "Tipo", "Validade"])
+        for material in materiais:
+            ws.append([material.serial, material.nome, material.tipo, material.validade])
+
+        response = HttpResponse(content_type="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet")
+        response["Content-Disposition"] = 'attachment; filename="relatorio_materiais.xlsx"'
+        wb.save(response)
+        return response

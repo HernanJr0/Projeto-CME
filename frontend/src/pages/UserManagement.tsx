@@ -4,6 +4,7 @@ import { Typography, Box, Button, CircularProgress, Card } from "@mui/material";
 import { AuthContext } from "../context/AuthContext";
 import UserModal from "../components/UserModal";
 import { DataGrid } from "@mui/x-data-grid";
+import { AddOutlined, ClearOutlined, EditOutlined } from "@mui/icons-material";
 
 interface User {
 	id: number;
@@ -124,17 +125,21 @@ export default function UserManagement() {
 						onClick={() => handleCreateEdit(params.row.id)}
 						sx={{ marginRight: 1 }}
 					>
+						<EditOutlined sx={{ marginRight: 1 }} />
 						Editar
 					</Button>
-					{auth?.user?.id !== params.row.id && (
-						<Button
-							variant="outlined"
-							color="error"
-							onClick={() => handleDelete(params.row.id)}
-						>
-							Excluir
-						</Button>
-					)}
+					{auth?.user?.id &&
+						params.row?.id &&
+						auth.user.id !== params.row.id && (
+							<Button
+								variant="outlined"
+								color="error"
+								onClick={() => handleDelete(params.row.id)}
+							>
+								<ClearOutlined sx={{ marginRight: 1 }} />
+								Excluir
+							</Button>
+						)}
 				</Box>
 			),
 		},
@@ -171,6 +176,7 @@ export default function UserManagement() {
 						color="primary"
 						onClick={() => handleCreateEdit(0)}
 					>
+						<AddOutlined sx={{ marginRight: 1 }} />
 						Adicionar Usuário
 					</Button>
 				</Box>

@@ -10,6 +10,7 @@ import {
 	Select,
 	FormControl,
 	InputLabel,
+	Typography,
 } from "@mui/material";
 
 interface UserModalProps {
@@ -28,6 +29,7 @@ interface ValidationErrors {
 	username?: string;
 	email?: string;
 	password?: string;
+	role?: string;
 }
 
 export default function UserModal({
@@ -56,6 +58,7 @@ export default function UserModal({
 		if (!username.trim()) newErrors.username = "Nome de usuário é obrigatório.";
 		if (!email.match(/^\S+@\S+\.\S+$/)) newErrors.email = "Email inválido.";
 		if (!initialData && !password) newErrors.password = "Senha é obrigatória.";
+		if (!role) newErrors.role = "Cargo é obrigatório.";
 
 		setErrors(newErrors);
 		return Object.keys(newErrors).length === 0;
@@ -95,17 +98,25 @@ export default function UserModal({
 					error={!!errors.email}
 					helperText={errors.email}
 				/>
-				<FormControl fullWidth margin="dense">
+				<FormControl fullWidth margin="dense" error={!!errors.role}>
 					<InputLabel>Cargo</InputLabel>
 					<Select
 						value={role}
 						onChange={(e) => setRole(e.target.value)}
 						label="Cargo"
 					>
+						<MenuItem value="">
+							<em>Selecione um cargo</em>
+						</MenuItem>
 						<MenuItem value="tecnico">Técnico</MenuItem>
 						<MenuItem value="enfermeiro">Enfermeiro</MenuItem>
 						<MenuItem value="administrativo">Administrativo</MenuItem>
 					</Select>
+					{errors.role && (
+						<Typography variant="caption" color="error" sx={{ ml: 1.5 }}>
+							{errors.role}
+						</Typography>
+					)}
 				</FormControl>
 				{!initialData && (
 					<TextField

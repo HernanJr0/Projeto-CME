@@ -13,6 +13,8 @@ import { DarkMode, LightMode } from "@mui/icons-material";
 import { AuthProvider } from "./context/AuthProvider";
 import InternalLayout from "./components/InternalLayout";
 import UserManagement from "./pages/UserManagement";
+import Profile from "./pages/Profile";
+import Materials from "./pages/Materials";
 
 const PrivateRoute: React.FC<{ children: JSX.Element }> = ({ children }) => {
 	const auth = React.useContext(AuthContext);
@@ -41,9 +43,9 @@ const PrivateRoutes: React.FC = () => (
 			<Route path="/" element={<InternalLayout />}>
 				<Route path="dashboard" element={<Dashboard />} />
 				<Route path="users" element={<UserManagement />} />
-				<Route path="profile" element={<div>Profile</div>} />
+				<Route path="profile" element={<Profile />} />
 				<Route path="reports" element={<div>Reports</div>} />
-				<Route path="materials" element={<div>Materials</div>} />
+				<Route path="materials" element={<Materials />} />
 				<Route path="processing" element={<div>Processing</div>} />
 			</Route>
 		</Routes>
@@ -55,7 +57,7 @@ interface AppProps {
 	setMode: React.Dispatch<React.SetStateAction<"light" | "dark">>;
 }
 
-const App: React.FC<AppProps> = ({ mode, setMode }) => {
+function App({ mode, setMode }: AppProps) {
 	return (
 		<Router>
 			<Tooltip
