@@ -13,6 +13,9 @@ class MaterialSerializer(serializers.ModelSerializer):
         read_only_fields = ['created_at', 'serial']
 
 class ProcessSerializer(serializers.ModelSerializer):
+    material = MaterialSerializer()
+    responsible = UserSerializer()
+    
     class Meta:
         model = Process
         fields = '__all__'

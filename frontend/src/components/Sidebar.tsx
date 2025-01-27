@@ -9,59 +9,66 @@ import {
 import { useNavigate } from "react-router-dom";
 
 import {
-	AccountCircleOutlined,
-	DashboardOutlined,
-	DescriptionOutlined,
-	GroupsOutlined,
-	HourglassBottomOutlined,
-	InventoryOutlined,
-	LogoutOutlined,
+	DashboardRounded,
+	DescriptionRounded,
+	GroupsRounded,
+	HourglassBottomRounded,
+	InventoryRounded,
+	LogoutRounded,
 } from "@mui/icons-material";
 import { useContext } from "react";
 import { AuthContext } from "../context/AuthContext";
 
-const SidebarItem: React.FC<{
+interface SidebarItemProps {
 	label: string;
 	icon?: React.ReactNode;
 	onClick?: () => void;
-}> = ({ label, icon, onClick }) => (
-	<Tooltip
-		title={label}
-		arrow
-		placement="right"
-		enterDelay={500}
-		leaveDelay={200}
-	>
-		<Button
-			sx={{
-				width: "100%",
-				justifyContent: "flex-start",
-				textTransform: "none",
-				marginBottom: "0.5rem",
-			}}
-			onClick={onClick}
+}
+
+function SidebarItem({ label, icon, onClick }: SidebarItemProps) {
+	return (
+		<Tooltip
+			title={label}
+			arrow
+			placement="right"
+			enterDelay={500}
+			leaveDelay={200}
 		>
-			{icon && (
-				<Box
-					sx={{ display: "flex", alignItems: "center", marginRight: "0.5rem" }}
-				>
-					{icon}
-				</Box>
-			)}
-			<Typography
+			<Button
 				sx={{
-					overflow: "hidden",
-					textOverflow: "ellipsis",
-					whiteSpace: "nowrap",
-					fontSize: "0.875rem",
-					fontWeight: 500,
+					width: "100%",
+					justifyContent: "flex-start",
+					textTransform: "none",
+					marginBottom: "0.5rem",
 				}}
+				onClick={onClick}
 			>
-				{label}
-			</Typography>
-		</Button>
-	</Tooltip>
-);
+				{icon && (
+					<Box
+						sx={{
+							display: "flex",
+							alignItems: "center",
+							marginRight: "0.5rem",
+						}}
+					>
+						{icon}
+					</Box>
+				)}
+				<Typography
+					sx={{
+						overflow: "hidden",
+						textOverflow: "ellipsis",
+						whiteSpace: "nowrap",
+						fontSize: "0.875rem",
+						fontWeight: 500,
+					}}
+				>
+					{label}
+				</Typography>
+			</Button>
+		</Tooltip>
+	);
+}
 
 const SidebarSection: React.FC<{
 	title: string;
@@ -93,7 +100,7 @@ function Sidebar() {
 			items: [
 				{
 					label: "Dashboard",
-					icon: <DashboardOutlined />,
+					icon: <DashboardRounded />,
 					onClick: () => navigate("/dashboard"),
 				},
 			],
@@ -103,13 +110,8 @@ function Sidebar() {
 			items: [
 				{
 					label: "Gerenciamento de Usuários",
-					icon: <GroupsOutlined />,
+					icon: <GroupsRounded />,
 					onClick: () => navigate("/users"),
-				},
-				{
-					label: "Perfil",
-					icon: <AccountCircleOutlined />,
-					onClick: () => navigate("/profile"),
 				},
 			],
 		},
@@ -118,12 +120,12 @@ function Sidebar() {
 			items: [
 				{
 					label: "Materiais",
-					icon: <InventoryOutlined />,
+					icon: <InventoryRounded />,
 					onClick: () => navigate("/materials"),
 				},
 				{
 					label: "Processamento",
-					icon: <HourglassBottomOutlined />,
+					icon: <HourglassBottomRounded />,
 					onClick: () => navigate("/processing"),
 				},
 			],
@@ -133,7 +135,7 @@ function Sidebar() {
 			items: [
 				{
 					label: "Visualizar e Exportar",
-					icon: <DescriptionOutlined />,
+					icon: <DescriptionRounded />,
 					onClick: () => navigate("/reports"),
 				},
 			],
@@ -149,6 +151,7 @@ function Sidebar() {
 				height: "100vh",
 				overflowY: "auto",
 				borderRight: `1px solid ${theme.palette.divider}`,
+				backgroundColor: theme.palette.background.paper,
 			}}
 		>
 			<Box sx={{ padding: "1rem 0 0", textAlign: "center" }}>
@@ -174,7 +177,7 @@ function Sidebar() {
 						width: "100%",
 					}}
 				>
-					<LogoutOutlined
+					<LogoutRounded
 						sx={{
 							marginRight: "0.5rem",
 						}}

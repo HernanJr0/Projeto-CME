@@ -1,9 +1,9 @@
-import { Processo } from "../types";
+import { Process } from "../types";
 import api from "../utils/api";
 
-export const getProcesses = async (serial: string): Promise<Processo[]> => {
+export const getProcesses = async (): Promise<Process[]> => {
 	try {
-		const response = await api.get(`processes/${serial}`);
+		const response = await api.get(`processes`);
 		return response.data;
 	} catch (error) {
 		console.error("Erro ao buscar processos:", error);
@@ -13,8 +13,8 @@ export const getProcesses = async (serial: string): Promise<Processo[]> => {
 
 export const postProcesses = async (
 	serial: string,
-	processo: Processo
-): Promise<Processo> => {
+	processo: Process
+): Promise<Process> => {
 	try {
 		const response = await api.post(`processes/${serial}`, processo);
 		return response.data;

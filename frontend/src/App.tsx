@@ -1,4 +1,4 @@
-import React from "react";
+import React, { ReactNode, useContext } from "react";
 import {
 	BrowserRouter as Router,
 	Routes,
@@ -8,16 +8,50 @@ import {
 import Login from "./pages/Login";
 import Dashboard from "./pages/Dashboard";
 import { AuthContext } from "./context/AuthContext";
-import { IconButton, Tooltip } from "@mui/material";
-import { DarkMode, LightMode } from "@mui/icons-material";
+import { Box, IconButton, Tooltip } from "@mui/material";
+import {
+	AccountCircleRounded,
+	DarkModeRounded,
+	LightModeRounded,
+} from "@mui/icons-material";
 import { AuthProvider } from "./context/AuthProvider";
 import InternalLayout from "./components/InternalLayout";
-import UserManagement from "./pages/UserManagement";
-import Profile from "./pages/Profile";
+import Users from "./pages/Users";
 import Materials from "./pages/Materials";
+import Processing from "./pages/Processing";
+import ProfileModal from "./components/ProfileModal";
 
-const PrivateRoute: React.FC<{ children: JSX.Element }> = ({ children }) => {
-	const auth = React.useContext(AuthContext);
+interface ChildrenProps {
+	children: ReactNode;
+}
+
+interface ToolbarProps {
+	mode: "light" | "dark";
+	setMode: React.Dispatch<React.SetStateAction<"light" | "dark">>;
+}
+
+const ThemeButton: React.FC<ToolbarProps> = ({ mode, setMode }) => (
+	<Tooltip
+		title={`Mudar para o modo ${mode === "light" ? "escuro" : "claro"}`}
+		sx={{
+			position: "fixed",
+			top: 16,
+			right: 32,
+			zIndex: 1000,
+		}}
+	>
+		<IconButton onClick={() => setMode(mode === "light" ? "dark" : "light")}>
+			{mode === "light" ? (
+				<DarkModeRounded sx={{ fontSize: "2rem" }} />
+			) : (
+				<LightModeRounded sx={{ fontSize: "2rem" }} />
+			)}
+		</IconButton>
+	</Tooltip>
+);
+
+function PrivateRoute({ children }: ChildrenProps) {
+	const auth = useContext(AuthContext);
 
 	if (!auth) {
 		throw new Error("Erro no AuthContext.");
@@ -25,57 +59,58 @@ const PrivateRoute: React.FC<{ children: JSX.Element }> = ({ children }) => {
 
 	if (auth.loading) return <div>Carregando...</div>;
 	return auth.user ? children : <Navigate to="/" />;
-};
+}
 
-const PublicRoute: React.FC<{ children: JSX.Element }> = ({ children }) => {
-	const auth = React.useContext(AuthContext);
+function PublicRoute({ children }: ChildrenProps) {
+	const auth = useContext(AuthContext);
 
 	if (!auth) {
 		throw new Error("Erro no AuthContext.");
 	}
 
-	return auth.user ? <Navigate to="/dashboard" /> : children;
-};
-
-const PrivateRoutes: React.FC = () => (
-	<PrivateRoute>
-		<Routes>
-			<Route path="/" element={<InternalLayout />}>
-				<Route path="dashboard" element={<Dashboard />} />
-				<Route path="users" element={<UserManagement />} />
-				<Route path="profile" element={<Profile />} />
-				<Route path="reports" element={<div>Reports</div>} />
-				<Route path="materials" element={<Materials />} />
-				<Route path="processing" element={<div>Processing</div>} />
-			</Route>
-		</Routes>
-	</PrivateRoute>
-);
-
-interface AppProps {
-	mode: "light" | "dark";
-	setMode: React.Dispatch<React.SetStateAction<"light" | "dark">>;
+	return auth.user ? <Navigate to="/dashboard" /> : <>{children}</>;
 }
 
-function App({ mode, setMode }: AppProps) {
+function PrivateRoutes() {
+	const [open, setOpen] = React.useState(false);
+
 	return (
-		<Router>
-			<Tooltip
+		<>
+			<Box
 				sx={{
 					position: "fixed",
 					top: 16,
-					right: 16,
+					right: 96,
+					zIndex: 1000,
 				}}
-				title={`Mudar para o modo ${mode === "light" ? "escuro" : "claro"}`}
 			>
-				<IconButton
-					onClick={() => setMode(mode === "light" ? "dark" : "light")}
-				>
-					{mode === "light" ? <DarkMode /> : <LightMode />}
-				</IconButton>
-			</Tooltip>
+				<Tooltip title="Perfil">
+					<IconButton onClick={() => setOpen(true)}>
+						<AccountCircleRounded sx={{ fontSize: "2rem" }} />
+					</IconButton>
+				</Tooltip>
+			</Box>
+			<PrivateRoute>
+				<Routes>
+					<Route path="/" element={<InternalLayout />}>
+						<Route path="dashboard" element={<Dashboard />} />
+						<Route path="users" element={<Users />} />
+						<Route path="reports" element={<div>Reports</div>} />
+						<Route path="materials" element={<Materials />} />
+						<Route path="processing" element={<Processing />} />
+					</Route>
+				</Routes>
+			</PrivateRoute>
+			<ProfileModal isOpen={open} onClose={() => setOpen(false)} />
+		</>
+	);
+}
 
+function App({ mode, setMode }: ToolbarProps) {
+	return (
+		<Router>
 			<AuthProvider>
+				<ThemeButton mode={mode} setMode={setMode} />
 				<Routes>
 					<Route
 						path="/"
@@ -90,6 +125,6 @@ function App({ mode, setMode }: AppProps) {
 			</AuthProvider>
 		</Router>
 	);
-};
+}
 
 export default App;

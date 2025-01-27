@@ -4,7 +4,7 @@ import { Typography, Box, Button, CircularProgress, Card } from "@mui/material";
 import { AuthContext } from "../context/AuthContext";
 import UserModal from "../components/UserModal";
 import { DataGrid } from "@mui/x-data-grid";
-import { AddOutlined, ClearOutlined, EditOutlined } from "@mui/icons-material";
+import { AddRounded, ClearRounded, EditRounded } from "@mui/icons-material";
 
 interface User {
 	id: number;
@@ -14,7 +14,7 @@ interface User {
 	is_active: boolean;
 }
 
-export default function UserManagement() {
+export default function Users() {
 	const [users, setUsers] = useState<User[]>([]);
 	const [loading, setLoading] = useState(true);
 	const [open, setOpen] = useState(false);
@@ -93,13 +93,13 @@ export default function UserManagement() {
 	}
 
 	const columns = [
-		{ field: "id", headerName: "ID", width: 70 },
-		{ field: "username", headerName: "Nome de Usuário", width: 200 },
+		{ field: "id", headerName: "ID", width: 100 },
+		{ field: "username", headerName: "Nome de Usuário", width: 250 },
 		{ field: "email", headerName: "Email", width: 250 },
 		{
 			field: "role",
 			headerName: "Cargo",
-			width: 150,
+			width: 170,
 			renderCell: (params: { row: User }) => {
 				return (
 					params.row.role.charAt(0).toUpperCase() + params.row.role.slice(1)
@@ -125,7 +125,7 @@ export default function UserManagement() {
 						onClick={() => handleCreateEdit(params.row.id)}
 						sx={{ marginRight: 1 }}
 					>
-						<EditOutlined sx={{ marginRight: 1 }} />
+						<EditRounded sx={{ marginRight: 1 }} />
 						Editar
 					</Button>
 					{auth?.user?.id &&
@@ -136,7 +136,7 @@ export default function UserManagement() {
 								color="error"
 								onClick={() => handleDelete(params.row.id)}
 							>
-								<ClearOutlined sx={{ marginRight: 1 }} />
+								<ClearRounded sx={{ marginRight: 1 }} />
 								Excluir
 							</Button>
 						)}
@@ -176,7 +176,7 @@ export default function UserManagement() {
 						color="primary"
 						onClick={() => handleCreateEdit(0)}
 					>
-						<AddOutlined sx={{ marginRight: 1 }} />
+						<AddRounded sx={{ marginRight: 1 }} />
 						Adicionar Usuário
 					</Button>
 				</Box>

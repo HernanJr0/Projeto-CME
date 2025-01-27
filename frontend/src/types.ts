@@ -1,12 +1,14 @@
 export interface Material {
-	id: number;
+	id?: number;
 	name: string;
 	material_type: string;
 	expiration_date: string;
-	serial: string;
+	serial?: string;
+	created_at?: string;
+	actions?: JSX.Element;
 }
 
-export interface Processo {
+export interface Process {
 	id: number;
 	material: number;
 	step: "Recebimento" | "Lavagem" | "Esterilização" | "Distribuição";
@@ -15,7 +17,7 @@ export interface Processo {
 	responsible: string;
 }
 
-export interface Falha {
+export interface Failure {
 	id: number;
 	material: number;
 	step: string;
@@ -25,6 +27,6 @@ export interface Falha {
 
 export interface Rastreabilidade {
 	material: Material;
-	processes: Processo[];
-	failures: Falha[];
+	processes: Process[];
+	failures: Failure[];
 }

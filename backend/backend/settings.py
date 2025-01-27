@@ -27,6 +27,7 @@ SECRET_KEY = os.getenv('SECRET_KEY') or get_random_secret_key()
 
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = False
+# True
 # bool(int(os.getenv('DEBUG', 0)))
 
 ALLOWED_HOSTS = [
@@ -103,9 +104,11 @@ DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.postgresql_psycopg2',
         'NAME': 'postgres',
+        # 'NAME': 'cme',
         'USER': 'postgres',
         'PASSWORD': 'postgres',
         'HOST': 'db',
+        # 'HOST': 'localhost',
         'PORT': 5432,
     }
 }

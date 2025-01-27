@@ -7,10 +7,6 @@ import {
 	TextField,
 	Button,
 	MenuItem,
-	Select,
-	FormControl,
-	InputLabel,
-	Typography,
 } from "@mui/material";
 
 interface UserModalProps {
@@ -98,26 +94,24 @@ export default function UserModal({
 					error={!!errors.email}
 					helperText={errors.email}
 				/>
-				<FormControl fullWidth margin="dense" error={!!errors.role}>
-					<InputLabel>Cargo</InputLabel>
-					<Select
-						value={role}
-						onChange={(e) => setRole(e.target.value)}
-						label="Cargo"
-					>
-						<MenuItem value="">
-							<em>Selecione um cargo</em>
-						</MenuItem>
-						<MenuItem value="tecnico">Técnico</MenuItem>
-						<MenuItem value="enfermeiro">Enfermeiro</MenuItem>
-						<MenuItem value="administrativo">Administrativo</MenuItem>
-					</Select>
-					{errors.role && (
-						<Typography variant="caption" color="error" sx={{ ml: 1.5 }}>
-							{errors.role}
-						</Typography>
-					)}
-				</FormControl>
+				<TextField
+					margin="dense"
+					label="Cargo"
+					fullWidth
+					select
+					value={role}
+					onChange={(e) => setRole(e.target.value)}
+					error={!!errors.role}
+					helperText={errors.role}
+					/* disabled={initialData && role === auth?.user?.role} */
+				>
+					<MenuItem value="">
+						<em>Selecione um cargo</em>
+					</MenuItem>
+					<MenuItem value="tecnico">Técnico</MenuItem>
+					<MenuItem value="enfermeiro">Enfermeiro</MenuItem>
+					<MenuItem value="administrativo">Administrativo</MenuItem>
+				</TextField>
 				{!initialData && (
 					<TextField
 						margin="dense"
