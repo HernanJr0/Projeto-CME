@@ -140,6 +140,7 @@ export default function Materials() {
 						color="primary"
 						sx={{ marginRight: 1 }}
 						onClick={() => handleCreateEdit(params.row.id)}
+						disabled={auth?.user?.role !== "administrativo"}
 					>
 						<EditRounded sx={{ marginRight: 1 }} />
 						Editar
@@ -148,6 +149,7 @@ export default function Materials() {
 						variant="outlined"
 						color="error"
 						onClick={() => handleDelete(params.row.id)}
+						disabled={auth?.user?.role !== "administrativo"}
 					>
 						<ClearRounded sx={{ marginRight: 1 }} />
 						Excluir
