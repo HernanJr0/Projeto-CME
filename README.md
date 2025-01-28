@@ -26,34 +26,34 @@ O objetivo é criar uma aplicação web que auxilie no controle e rastreabilidad
 
 ## 🚀 Funcionalidades
 
-### 1. **Cadastro de Usuários**
+### Usuários
+- Criação, edição, listagem e exclusão de usuários.
+- Atribuição de funções:
+  - **Usuário Técnico**: Responsável por realizar as etapas do processo.
+  - **Usuário Enfermagem**: Responsável por consultar a rastreabilidade, falhas e relatórios.
+  - **Usuário Administrativo**: Responsável por gerenciar usuários e cadastrar materiais.
 
-- **Usuário Técnico**: Realiza as etapas do processo.
-- **Usuário Enfermagem**: Consulta a rastreabilidade, falhas e relatórios.
-- **Usuário Administrativo**: Gerencia usuários e cadastra materiais.
-
-### 2. **Cadastro de Materiais**
-
-- Informações do material:
+### Materiais
+- Criação, edição, listagem e exclusão de materiais a serem esterilizados.
+- Informações dos materiais:
   - Nome
   - Tipo
   - Data de validade
-  - Serial (gerado automaticamente).
+  - Serial (gerado automaticamente)
 
-### 3. **Rastreabilidade**
+### Processamento
+- Registro das etapas do processo dos materiais:
+  - **Recebimento**: Etapa de recebimento dos materiais dos diversos setores do hospital.
+  - **Lavagem**: Etapa onde é feita uma lavagem dos materiais.
+  - **Esterilização**: Etapa onde os materiais cirúrgicos são esterilizados com alta temperatura.
+  - **Distribuição**: Etapa onde é feito a distribuição dos materiais cirúrgicos para os diversos setores do Hospital.
 
+### Rastreabilidade
 - Visualização das etapas que um material passou.
-- Exibição das falhas associadas ao serial e a quantidade de vezes que o material passou pelo processo.
-- Geração de relatórios em PDF e XLSX:
-  - Materiais que passaram por todas as etapas.
-  - Falhas registradas.
-
-### 4. **Etapas do Processo**
-
-1. **Recebimento**: Registro do material recebido dos setores do hospital.
-2. **Lavagem**: Lavagem dos materiais.
-3. **Esterilização**: Esterilização com alta temperatura.
-4. **Distribuição**: Distribuição dos materiais para os setores do hospital.
+- Filtro por serial para exibir etapas específicas.
+- Exibição de falhas associadas ao serial e quantidade de vezes que o material passou pelo processo.
+- Geração de relatórios:
+- **PDF** e **XLSX** com seriais que passaram por todas as etapas e falhas registradas.
 
 ## 🛠️ Tecnologias Utilizadas
 
