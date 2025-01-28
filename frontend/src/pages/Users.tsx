@@ -5,14 +5,7 @@ import { AuthContext } from "../context/AuthContext";
 import UserModal from "../components/UserModal";
 import { DataGrid } from "@mui/x-data-grid";
 import { AddRounded, ClearRounded, EditRounded } from "@mui/icons-material";
-
-interface User {
-	id: number;
-	username: string;
-	email: string;
-	role: string;
-	is_active: boolean;
-}
+import { User } from "../types";
 
 export default function Users() {
 	const [users, setUsers] = useState<User[]>([]);

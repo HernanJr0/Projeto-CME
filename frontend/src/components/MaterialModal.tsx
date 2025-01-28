@@ -94,6 +94,9 @@ export default function MaterialModal({
 					error={!!errors.materialType}
 					helperText={errors.materialType}
 				>
+					<MenuItem value="">
+						<em>Selecione um Tipo</em>
+					</MenuItem>
 					<MenuItem value="EPI">EPI</MenuItem>
 					<MenuItem value="Equipamento Médico">Equipamento Médico</MenuItem>
 					<MenuItem value="Material Cirúrgico">Material Cirúrgico</MenuItem>

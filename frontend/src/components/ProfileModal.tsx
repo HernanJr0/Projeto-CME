@@ -40,6 +40,7 @@ function InfoItem({ icon: Icon, label, value }: InfoItemProps) {
 					display: "flex",
 					alignItems: "center",
 					gap: "0.5rem",
+					textTransform: label === "Cargo" ? "capitalize" : "none",
 				}}
 			>
 				<Icon />

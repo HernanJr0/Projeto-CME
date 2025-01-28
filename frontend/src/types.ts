@@ -1,3 +1,11 @@
+export interface User {
+	id: number;
+	username: string;
+	email: string;
+	role: string;
+	is_active: boolean;
+}
+
 export interface Material {
 	id?: number;
 	name: string;
@@ -9,12 +17,12 @@ export interface Material {
 }
 
 export interface Process {
-	id: number;
-	material: number;
-	step: "Recebimento" | "Lavagem" | "Esterilização" | "Distribuição";
-	start_date: string;
-	end_date: string | null;
-	responsible: string;
+	id?: number;
+	material?: number | null;
+	step: string;
+	start_date?: string;
+	end_date?: string | null;
+	responsible?: number | null;
 }
 
 export interface Failure {
@@ -25,8 +33,15 @@ export interface Failure {
 	failure_date: string;
 }
 
-export interface Rastreabilidade {
+export interface Tracking {
 	material: Material;
-	processes: Process[];
+	processes: Process;
 	failures: Failure[];
+}
+
+export interface History {
+	id: number;
+	material_serial: number;
+	action: string;
+	date: string;
 }

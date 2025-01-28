@@ -1,5 +1,5 @@
 from django.contrib import admin
-from app.models import CustomUser, Material, Process, Failure
+from app.models import CustomUser, Material, Process, Failure, History
 
 @admin.register(CustomUser)
 class CustomUserAdmin(admin.ModelAdmin):
@@ -18,6 +18,7 @@ class CustomUserAdmin(admin.ModelAdmin):
         }),
     )
 
+admin.site.register(History)
 admin.site.register(Material)
 admin.site.register(Process)
 admin.site.register(Failure)

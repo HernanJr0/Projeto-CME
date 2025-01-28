@@ -20,6 +20,7 @@ import Users from "./pages/Users";
 import Materials from "./pages/Materials";
 import Processing from "./pages/Processing";
 import ProfileModal from "./components/ProfileModal";
+import Reports from "./pages/Reports";
 
 interface ChildrenProps {
 	children: ReactNode;
@@ -95,7 +96,7 @@ function PrivateRoutes() {
 					<Route path="/" element={<InternalLayout />}>
 						<Route path="dashboard" element={<Dashboard />} />
 						<Route path="users" element={<Users />} />
-						<Route path="reports" element={<div>Reports</div>} />
+						<Route path="reports" element={<Reports />} />
 						<Route path="materials" element={<Materials />} />
 						<Route path="processing" element={<Processing />} />
 					</Route>

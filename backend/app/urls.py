@@ -9,6 +9,7 @@ from app.views import (
     ProcessViewSet,
     FailureViewSet,
     RelatorioViewSet,
+    HistoryViewSet,
 )
 
 from rest_framework.routers import DefaultRouter
@@ -18,6 +19,7 @@ router.register(r'materials', MaterialViewSet, basename='materials')
 router.register(r'processes', ProcessViewSet, basename='processes')
 router.register(r'failures', FailureViewSet, basename='failures')
 router.register(r'report', RelatorioViewSet, basename='report')
+router.register(r'history', HistoryViewSet, basename='history')
 
 urlpatterns = router.urls + [
     path('register/', RegisterView.as_view(), name='register'),

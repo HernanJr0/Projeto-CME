@@ -124,7 +124,7 @@ function Sidebar() {
 					onClick: () => navigate("/materials"),
 				},
 				{
-					label: "Processamento",
+					label: "Processos",
 					icon: <HourglassBottomRounded />,
 					onClick: () => navigate("/processing"),
 				},

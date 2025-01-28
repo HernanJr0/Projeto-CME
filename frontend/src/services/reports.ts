@@ -2,7 +2,7 @@ import api from "../utils/api";
 
 export const gerarRelatorioPDF = async (): Promise<void> => {
 	try {
-		const response = await api.get("relatorios/pdf/", {
+		const response = await api.get("report/pdf/", {
 			responseType: "blob",
 		});
 		const file = new Blob([response.data], { type: "application/pdf" });
@@ -18,7 +18,7 @@ export const gerarRelatorioPDF = async (): Promise<void> => {
 
 export const gerarRelatorioXLSX = async (): Promise<void> => {
 	try {
-		const response = await api.get("relatorios/xlsx/", {
+		const response = await api.get("report/xlsx/", {
 			responseType: "blob",
 		});
 		const file = new Blob([response.data], {

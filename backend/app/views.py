@@ -10,8 +10,8 @@ from django.core.validators import validate_email
 from django.core.exceptions import ValidationError
 from django.shortcuts import get_object_or_404
 
-from app.models import CustomUser, Material, Process, Failure
-from app.serializers import MaterialSerializer, ProcessSerializer, FailureSerializer
+from app.models import CustomUser, Material, Process, Failure, History
+from app.serializers import MaterialSerializer, ProcessSerializer, FailureSerializer, HistorySerializer
 from app.permissions import IsAdminRole, IsTechnicianRole, IsNurseRole
 
 from django.http import HttpResponse
@@ -137,6 +137,15 @@ class UserDetailView(APIView):
         user.delete()
         
         return Response({"message": "Usuário deletado com sucesso"}, status=status.HTTP_200_OK)
+    
+class HistoryViewSet(viewsets.ModelViewSet):
+    permission_classes = [IsAuthenticated]
+    
+    queryset = History.objects.all()
+    serializer_class = HistorySerializer
+
+    def perform_create(self, serializer):
+        serializer.save(user=self.request.user)
 
 class MaterialViewSet(viewsets.ModelViewSet):
     permission_classes = [IsAuthenticated]
@@ -183,7 +192,7 @@ class RelatorioViewSet(viewsets.ViewSet):
 
         y = 700
         for material in materiais:
-            p.drawString(100, y, f"{material.serial} - {material.nome} - {material.tipo}")
+            p.drawString(100, y, f"{material.serial} - {material.name} - {material.material_type}")
             y -= 20
 
         p.save()
@@ -199,7 +208,7 @@ class RelatorioViewSet(viewsets.ViewSet):
 
         ws.append(["Serial", "Nome", "Tipo", "Validade"])
         for material in materiais:
-            ws.append([material.serial, material.nome, material.tipo, material.validade])
+            ws.append([material.serial, material.name, material.material_type, material.expiration_date])
 
         response = HttpResponse(content_type="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet")
         response["Content-Disposition"] = 'attachment; filename="relatorio_materiais.xlsx"'

@@ -105,16 +105,16 @@ export default function Materials() {
 	};
 
 	const columns: GridColDef[] = [
-		{ field: "id", headerName: "ID", width: 100 },
-		{ field: "serial", headerName: "Serial", width: 200 },
-		{ field: "name", headerName: "Nome", width: 250 },
+		{ field: "id", headerName: "ID", width: 70 },
+		{ field: "serial", headerName: "Serial", width: 230 },
+		{ field: "name", headerName: "Nome", width: 200 },
 		{ field: "material_type", headerName: "Tipo", width: 200 },
 		{
 			field: "created_at",
 			headerName: "Data do Cadastro",
-			width: 150,
+			width: 200,
 			renderCell: (params: GridRenderCellParams) =>
-				new Date(params.value).toLocaleDateString(),
+				new Date(params.value).toLocaleString(),
 		},
 		{
 			field: "expiration_date",
@@ -232,7 +232,10 @@ export default function Materials() {
 
 			<MaterialModal
 				open={open}
-				onClose={() => setOpen(false)}
+				onClose={() => {
+					setOpen(false);
+					setEditMaterial(null);
+				}}
 				onSave={handleSave}
 				initialData={
 					editMaterial
