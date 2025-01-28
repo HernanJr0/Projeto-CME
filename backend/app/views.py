@@ -186,12 +186,13 @@ class RelatorioViewSet(viewsets.ViewSet):
     @action(detail=False, methods=['get'])
     def pdf(self, request):
         materiais = History.objects.all()
+        filtered_materiais = materiais.filter(step='distribuicao')
         buffer = io.BytesIO()
         p = canvas.Canvas(buffer)
-        p.drawString(100, 750, "Relatório de Materiais")
+        p.drawString(100, 750, "Relatório de Materiais Processados")
 
         y = 700
-        for material in materiais:
+        for material in filtered_materiais:
             formatted_date = material.date.strftime('%d/%m/%Y')
             p.drawString(100, y, f"{material.id} - {material.material_serial} - {material.material} - {material.action} - {formatted_date}")
             y -= 20
@@ -203,12 +204,13 @@ class RelatorioViewSet(viewsets.ViewSet):
     @action(detail=False, methods=['get'])
     def xlsx(self, request):
         materiais = History.objects.all()
+        filtered_materiais = materiais.filter(step='distribuicao')
         wb = openpyxl.Workbook()
         ws = wb.active
-        ws.title = "Materiais"
+        ws.title = "Relatório de Materiais Processados"
 
         ws.append(["ID", "Serial", "Nome", "Ação", "Data", "Passagens"])
-        for material in materiais:
+        for material in filtered_materiais:
             formatted_date = material.date.strftime('%d/%m/%Y')
             ws.append([material.id, material.material_serial, material.material, material.action, formatted_date, material.passage_count])
 

@@ -21,6 +21,7 @@ router.register(r'failures', FailureViewSet, basename='failures')
 router.register(r'report', RelatorioViewSet, basename='report')
 router.register(r'history', HistoryViewSet, basename='history')
 
+
 urlpatterns = router.urls + [
     path('register/', RegisterView.as_view(), name='register'),
     path('login/', TokenObtainPairView.as_view(), name='login'),

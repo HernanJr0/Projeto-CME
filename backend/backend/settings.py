@@ -56,6 +56,7 @@ INSTALLED_APPS = [
     'corsheaders',
     'whitenoise.runserver_nostatic',
     'rest_framework_simplejwt',
+    'drf_yasg',
 ]
 
 REST_FRAMEWORK = {
