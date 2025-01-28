@@ -126,10 +126,10 @@ export default function UserModal({
 				)}
 			</DialogContent>
 			<DialogActions>
-				<Button onClick={onClose} color="primary">
+				<Button onClick={onClose} color="primary" variant="outlined">
 					Cancelar
 				</Button>
-				<Button onClick={handleSave} color="primary">
+				<Button onClick={handleSave} color="primary" variant="contained">
 					Salvar
 				</Button>
 			</DialogActions>

@@ -67,8 +67,15 @@ class Process(models.Model):
         else:
             last_history = History.objects.filter(material_serial=self.material.serial, step=self.step).last()
             if last_history:
-                last_history.passage_count += 1
-                last_history.save()
+                History.objects.create(
+                    user=self.responsible,
+                    material=self.material.name,
+                    material_serial=self.material.serial,
+                    action=f"Passagem para: {self.step.capitalize()}",
+                    step=self.step,
+                    passage_count=last_history.passage_count + 1,
+                    date=timezone.now()
+                )
             else:
                 History.objects.create(
                     user=self.responsible,
@@ -104,6 +111,33 @@ class Failure(models.Model):
     step = models.CharField(max_length=50, choices=STEPS)
     description = models.TextField()
     failure_date = models.DateTimeField(auto_now_add=True)
+    responsible = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE)
+    
+    def save(self, *args, **kwargs):
+        if not self.pk:
+            last_history = History.objects.filter(material_serial=self.material.serial, step=self.step).last()
+            
+            if last_history:
+                History.objects.create(
+                    user=self.responsible,
+                    material=self.material.name,
+                    material_serial=self.material.serial,
+                    action=f"Falha reportada: {self.step.capitalize()}",
+                    step=self.step,
+                    passage_count=last_history.passage_count,
+                    failure_count=last_history.failure_count + 1
+                )
+            else:
+                History.objects.create(
+                    user=self.responsible,
+                    material=self.material.name,
+                    material_serial=self.material.serial,
+                    action=f"Falha reportada: {self.step.capitalize()}",
+                    step=self.step,
+                    passage_count=0,
+                    failure_count=1
+                )
+        super().save(*args, **kwargs)
     
     def __str__(self):
         return f"{self.material} - {self.step}"
@@ -116,6 +150,7 @@ class History(models.Model):
     date = models.DateTimeField(auto_now_add=True)
     step = models.CharField(max_length=50, choices=Process.STEPS)
     passage_count = models.IntegerField(default=0)
+    failure_count = models.IntegerField(default=0)
     
     def __str__(self):
         return f"{self.user} - {self.action}"

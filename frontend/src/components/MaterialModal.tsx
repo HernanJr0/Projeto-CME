@@ -127,10 +127,10 @@ export default function MaterialModal({
 				/>
 			</DialogContent>
 			<DialogActions>
-				<Button onClick={onClose} color="primary">
+				<Button onClick={onClose} color="primary" variant="outlined">
 					Cancelar
 				</Button>
-				<Button color="primary" onClick={handleSave}>
+				<Button color="primary" onClick={handleSave} variant="contained">
 					Continuar
 				</Button>
 			</DialogActions>

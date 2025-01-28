@@ -11,12 +11,9 @@ export const getFailure = async (serial: string): Promise<Failure[]> => {
 	}
 };
 
-export const postFailure = async (
-	serial: string,
-	falha: Failure
-): Promise<Failure> => {
+export const postFailure = async (falha: Failure): Promise<Failure> => {
 	try {
-		const response = await api.post(`failures/${serial}/`, falha);
+		const response = await api.post(`failures/`, falha);
 		return response.data;
 	} catch (error) {
 		console.error("Erro ao registrar falha:", error);

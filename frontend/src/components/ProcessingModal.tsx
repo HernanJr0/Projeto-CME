@@ -12,16 +12,16 @@ import {
 import { Material, Process } from "../types";
 import { getMaterials } from "../services/materials";
 import { AuthContext } from "../context/AuthContext";
-import { ErrorOutline, Send } from "@mui/icons-material";
+import { Send } from "@mui/icons-material";
 
 interface ProcessingModalProps {
 	open: boolean;
 	initialData?: Process;
 	onSave: (
-		material: number | null,
+		material: number,
 		step: string,
-		responsible: number | null,
-		quantity: number | null
+		responsible: number,
+		quantity: number
 	) => void;
 	onClose: () => void;
 }
@@ -44,6 +44,15 @@ export default function ProcessingModal({
 	const [errors, setErrors] = useState<ValidationErrors>({});
 	const [responsible, setResponsible] = useState(initialData?.responsible || 0);
 	const [quantity, setQuantity] = useState(initialData?.quantity || 1);
+
+	const nextStep =
+		step === "recebimento"
+			? "lavagem"
+			: step === "lavagem"
+			? "esterilizacao"
+			: step === "esterilizacao"
+			? "distribuicao"
+			: "recebimento";
 
 	const auth = useContext(AuthContext);
 
@@ -80,37 +89,44 @@ export default function ProcessingModal({
 		return Object.keys(newErrors).length === 0;
 	}
 
-	function handleSave() {
+	async function handleSave() {
 		if (validateFields()) {
-			onSave(material, step, responsible, quantity);
-			onClose();
+			try {
+				await onSave(material, step, responsible, quantity);
+			} catch (error) {
+				console.error("Erro ao salvar processo", error);
+			} finally {
+				onClose();
+			}
 		}
 	}
 
 	return (
 		<Dialog open={open} onClose={onClose} fullWidth maxWidth="sm">
 			<DialogTitle>
-				{initialData ? "Editar Processo" : "Solicitar Recebimento"}
+				{initialData ? "Detalhes do Processo" : "Solicitar Recebimento"}
 			</DialogTitle>
 			<DialogContent>
 				{initialData && (
 					<Box mb={2} display="flex" gap={1}>
-						<Button variant="outlined" color="error">
-							<ErrorOutline
-								sx={{
-									mr: 1,
+						{step !== "distribuicao" && (
+							<Button
+								variant="contained"
+								color="primary"
+								onClick={() => {
+									if (validateFields()) {
+										onSave(material, nextStep, responsible, quantity);
+									}
 								}}
-							/>
-							Declarar Falha
-						</Button>
-						<Button variant="contained" color="primary">
-							<Send
-								sx={{
-									mr: 1,
-								}}
-							/>
-							Encaminhar para a próxima etapa
-						</Button>
+							>
+								<Send
+									sx={{
+										mr: 1,
+									}}
+								/>
+								Prosseguir para {nextStep}
+							</Button>
+						)}
 					</Box>
 				)}
 				<TextField
@@ -145,6 +161,7 @@ export default function ProcessingModal({
 						onChange={(e) => setStep(e.target.value)}
 						error={!!errors.step}
 						helperText={errors.step}
+						disabled
 					>
 						<MenuItem value="recebimento">Recebimento</MenuItem>
 						<MenuItem value="lavagem">Lavagem</MenuItem>

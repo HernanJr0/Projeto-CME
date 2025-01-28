@@ -27,11 +27,12 @@ export interface Process {
 }
 
 export interface Failure {
-	id: number;
+	id?: number;
 	material: number;
 	step: string;
 	description: string;
-	failure_date: string;
+	failure_date?: string;
+	responsible?: number | null;
 }
 
 export interface Tracking {

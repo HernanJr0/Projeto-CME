@@ -89,23 +89,9 @@ const AuthForm: React.FC<AuthFormProps> = ({
 			>
 				{buttonText}
 			</Button>
-			{/* <Divider>
-				<Typography>ou</Typography>
-			</Divider> */}
 			<Box
 				sx={{ display: "flex", justifyContent: "center", alignItems: "center" }}
-			>
-				{/* <Typography variant="caption" sx={{ marginRight: 1 }}>
-					{includeEmail ? "Já tem uma conta?" : "Não tem uma conta?"}
-				</Typography>
-				<Button
-					onClick={() => {
-						navigate(includeEmail ? "/" : "/register");
-					}}
-				>
-					{includeEmail ? "Fazer Login" : "Criar nova conta"}
-				</Button> */}
-			</Box>
+			></Box>
 		</form>
 	);
 };

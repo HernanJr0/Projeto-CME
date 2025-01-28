@@ -1,8 +1,20 @@
 import { useContext, useEffect, useState } from "react";
-import { Typography, Box, Button, CircularProgress, Card } from "@mui/material";
+import {
+	Typography,
+	Box,
+	Button,
+	CircularProgress,
+	Card,
+	Tooltip,
+} from "@mui/material";
 import { DataGrid, GridColDef, GridRenderCellParams } from "@mui/x-data-grid";
-import { AddOutlined, ClearRounded, EditRounded } from "@mui/icons-material";
-import { Process } from "../types";
+import {
+	AddOutlined,
+	DeleteOutline,
+	ErrorOutline,
+	ListRounded,
+} from "@mui/icons-material";
+import { Failure, Process } from "../types";
 import { AuthContext } from "../context/AuthContext";
 import {
 	createProcess,
@@ -12,9 +24,12 @@ import {
 	updateProcess,
 } from "../services/processing";
 import ProcessingModal from "../components/ProcessingModal";
+import { postFailure } from "../services/failures";
+import FailureModal from "../components/FailureModal";
 
 export default function Processing() {
-	const [open, setOpen] = useState(false);
+	const [openProcessing, setOpenProcessing] = useState(false);
+	const [openFailure, setOpenFailure] = useState(false);
 	const [processes, setProcesses] = useState<Process[]>([]);
 	const [loading, setLoading] = useState(true);
 	const [editProcess, setEditProcess] = useState<Process | null>(null);
@@ -47,15 +62,50 @@ export default function Processing() {
 	async function handleCreateEdit(id: number) {
 		if (id === 0) {
 			setEditProcess(null);
-			setOpen(true);
+			setOpenProcessing(true);
 		} else {
 			try {
 				const process = await getProcess(id);
 				setEditProcess(process);
-				setOpen(true);
+				setOpenProcessing(true);
 			} catch (error) {
 				console.error("Erro ao buscar processo", error);
 			}
+		}
+	}
+
+	async function handleFail(
+		material: number,
+		step: string,
+		description: string,
+		responsible: number,
+		restartProcess: boolean
+	) {
+		try {
+			const newFailure: Failure = {
+				material: material,
+				step: step,
+				description: description,
+				responsible: responsible,
+			};
+
+			if (restartProcess) {
+				const process = await getProcess(material);
+				const updatedProcess: Process = {
+					...process,
+					step: "recebimento",
+					end_date: null,
+				};
+				await updateProcess(updatedProcess);
+				const updatedProcesses = await getProcesses();
+				setProcesses(updatedProcesses);
+			}
+			await postFailure(newFailure);
+			setOpenFailure(false);
+			alert("Falha declarada com sucesso!");
+		} catch (error) {
+			console.error("Erro ao declarar falha no processo", error);
+			alert("Erro ao declarar falha no processo!");
 		}
 	}
 
@@ -86,7 +136,7 @@ export default function Processing() {
 					quantity: quantity || 1,
 				};
 				await updateProcess(updatedProcess);
-				setOpen(false);
+				setOpenProcessing(false);
 				const updatedProcesses = await getProcesses();
 				setProcesses(updatedProcesses);
 			} catch (error) {
@@ -103,7 +153,7 @@ export default function Processing() {
 				};
 
 				await createProcess(newProcess);
-				setOpen(false);
+				setOpenProcessing(false);
 				const updatedProcesses = await getProcesses();
 				setProcesses(updatedProcesses);
 				alert("Processo criado com sucesso!");
@@ -119,9 +169,7 @@ export default function Processing() {
 			field: "quantity",
 			headerName: "Quantidade",
 			width: 100,
-			renderCell: (params: GridRenderCellParams) => (
-				<>{params.row.quantity}</>
-			),
+			renderCell: (params: GridRenderCellParams) => <>{params.row.quantity}</>,
 		},
 		{
 			field: "serial",
@@ -152,14 +200,14 @@ export default function Processing() {
 		{
 			field: "start_date",
 			headerName: "Data de Início",
-			width: 150,
+			width: 140,
 			renderCell: (params: GridRenderCellParams) =>
 				new Date(params.value).toLocaleDateString(),
 		},
 		{
 			field: "end_date",
 			headerName: "Data de Fim",
-			width: 150,
+			width: 140,
 			renderCell: (params: GridRenderCellParams) => {
 				return (
 					<>
@@ -181,32 +229,37 @@ export default function Processing() {
 		{
 			field: "actions",
 			headerName: "Ações",
-			width: 250,
+			width: 270,
 			renderCell: (params: GridRenderCellParams) => (
 				<Box
 					sx={{
 						height: "100%",
 						display: "flex",
 						alignItems: "center",
+						justifyContent: "space-between",
+
 					}}
 				>
-					<Button
-						variant="outlined"
-						color="primary"
-						sx={{ marginRight: 1 }}
-						onClick={() => handleCreateEdit(params.row.id)}
-					>
-						<EditRounded sx={{ marginRight: 1 }} />
-						Editar
-					</Button>
-					<Button
-						variant="outlined"
-						color="error"
-						onClick={() => handleDelete(params.row.id)}
-					>
-						<ClearRounded sx={{ marginRight: 1 }} />
-						Excluir
-					</Button>
+					<Tooltip title="Detalhes do Processo" arrow>
+						<Button
+							variant="outlined"
+							color="primary"
+							onClick={() => handleCreateEdit(params.row.id)}
+						>
+							<ListRounded sx={{ mr: 1 }} />
+							Detalhes
+						</Button>
+					</Tooltip>
+					<Tooltip title="Excluir Processo" arrow>
+						<Button
+							variant="outlined"
+							color="error"
+							onClick={() => handleDelete(params.row.id)}
+						>
+							<DeleteOutline sx={{ mr: 1 }} />
+							Excluir
+						</Button>
+					</Tooltip>
 				</Box>
 			),
 		},
@@ -238,11 +291,20 @@ export default function Processing() {
 					</Typography>
 				</Box>
 				<Box>
+					<Button
+						variant="outlined"
+						color="warning"
+						onClick={() => setOpenFailure(true)}
+						sx={{ marginRight: 2 }}
+					>
+						<ErrorOutline sx={{ marginRight: 1 }} />
+						Declarar Falha
+					</Button>
 					{auth?.user?.role === "administrativo" && (
 						<Button
 							variant="contained"
 							color="primary"
-							onClick={() => setOpen(true)}
+							onClick={() => setOpenProcessing(true)}
 						>
 							<AddOutlined sx={{ marginRight: 1 }} />
 							Iniciar Processo
@@ -286,9 +348,9 @@ export default function Processing() {
 			)}
 
 			<ProcessingModal
-				open={open}
+				open={openProcessing}
 				onClose={() => {
-					setOpen(false);
+					setOpenProcessing(false);
 					setEditProcess(null);
 				}}
 				onSave={handleSave}
@@ -305,6 +367,12 @@ export default function Processing() {
 						  }
 						: undefined
 				}
+			/>
+
+			<FailureModal
+				open={openFailure}
+				onClose={() => setOpenFailure(false)}
+				onSave={handleFail}
 			/>
 		</div>
 	);

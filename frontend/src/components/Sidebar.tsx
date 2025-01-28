@@ -177,18 +177,6 @@ function Sidebar() {
 				flexDirection: "column",
 			}}
 		>
-			{/* <img
-				src="/cme-icon.png"
-				alt="placeholder"
-				style={{
-					width: "100px",
-					height: "100px",
-					borderRadius: "100%",
-
-					textAlign: "center",
-					alignSelf: "center",
-				}}
-			/>{/*  */}
 			<Box sx={{ textAlign: "center", margin: "1rem auto" }}>
 				<Typography variant="h6">CME</Typography>
 				<Typography variant="subtitle1">

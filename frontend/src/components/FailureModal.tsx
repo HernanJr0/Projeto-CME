@@ -7,18 +7,21 @@ import {
 	TextField,
 	Button,
 	MenuItem,
+	Switch,
+	FormControlLabel,
 } from "@mui/material";
-import { Material, Process } from "../types";
+import { Material } from "../types";
 import { getMaterials } from "../services/materials";
 import { AuthContext } from "../context/AuthContext";
 
-interface ProcessingModalProps {
+interface FailureModalProps {
 	open: boolean;
-	initialData?: Process;
 	onSave: (
-		material: number | null,
+		material: number,
 		step: string,
-		responsible: number | null
+		description: string,
+		responsible: number,
+		restartProcess: boolean
 	) => void;
 	onClose: () => void;
 }
@@ -26,23 +29,24 @@ interface ProcessingModalProps {
 interface ValidationErrors {
 	material?: string;
 	step?: string;
-	responsible?: string;
+	description?: string;
 }
 
 export default function FailureModal({
 	open,
-	initialData,
 	onClose,
 	onSave,
-}: ProcessingModalProps) {
-	const [material, setMaterial] = useState(initialData?.material || 0);
-	const [step, setStep] = useState(initialData?.step || "");
+}: FailureModalProps) {
 	const [errors, setErrors] = useState<ValidationErrors>({});
-	const [responsible, setResponsible] = useState(initialData?.responsible || 0);
-
-	const auth = useContext(AuthContext);
+	const [material, setMaterial] = useState(0);
+	const [step, setStep] = useState("");
+	const [description, setDescription] = useState("");
+	const [responsible, setResponsible] = useState(0);
+	const [restartProcess, setRestartProcess] = useState(false);
 
 	const [materials, setMaterials] = useState<Material[]>([]);
+
+	const auth = useContext(AuthContext);
 
 	useEffect(() => {
 		const loadMaterials = async () => {
@@ -58,16 +62,18 @@ export default function FailureModal({
 
 	useEffect(() => {
 		if (open) {
-			setMaterial(initialData?.material || 0);
-			setStep(initialData?.step || "");
-			setResponsible(initialData?.responsible || auth?.user?.id || 0);
+			setMaterial(0);
+			setStep("");
+			setDescription("");
+			setResponsible(auth?.user?.id || 0);
 		}
-	}, [open, initialData]);
+	}, [open]);
 
 	function validateFields() {
 		const newErrors: ValidationErrors = {};
 		if (!material) newErrors.material = "Material é obrigatório.";
 		if (!step) newErrors.step = "Etapa é obrigatória.";
+		if (!description) newErrors.description = "Descrição é obrigatória.";
 
 		setErrors(newErrors);
 		return Object.keys(newErrors).length === 0;
@@ -75,16 +81,14 @@ export default function FailureModal({
 
 	function handleSave() {
 		if (validateFields()) {
-			onSave(material, step, responsible);
+			onSave(material, step, description, responsible, restartProcess);
 			onClose();
 		}
 	}
 
 	return (
 		<Dialog open={open} onClose={onClose} fullWidth maxWidth="sm">
-			<DialogTitle>
-				{initialData ? "Editar Processo" : "Novo Processo"}
-			</DialogTitle>
+			<DialogTitle>Declarar Falha</DialogTitle>
 			<DialogContent>
 				<TextField
 					margin="dense"
@@ -93,7 +97,6 @@ export default function FailureModal({
 					select
 					fullWidth
 					value={material}
-					disabled={!!initialData}
 					onChange={(e) => setMaterial(Number(e.target.value))}
 					error={!!errors.material}
 					helperText={errors.material}
@@ -123,12 +126,31 @@ export default function FailureModal({
 					<MenuItem value="esterilizacao">Esterilização</MenuItem>
 					<MenuItem value="distribuicao">Distribuição</MenuItem>
 				</TextField>
+				<TextField
+					margin="dense"
+					id="description"
+					label="Descrição"
+					multiline
+					rows={4}
+					fullWidth
+					value={description}
+					onChange={(e) => setDescription(e.target.value)}
+				/>
+				<FormControlLabel
+					control={
+						<Switch
+							checked={restartProcess}
+							onChange={(e) => setRestartProcess(e.target.checked)}
+						/>
+					}
+					label="Reiniciar processo"
+				/>
 			</DialogContent>
 			<DialogActions>
-				<Button onClick={onClose} color="primary">
+				<Button onClick={onClose} color="primary" variant="outlined">
 					Cancelar
 				</Button>
-				<Button color="primary" onClick={handleSave}>
+				<Button color="primary" onClick={handleSave} variant="contained">
 					Cadastrar
 				</Button>
 			</DialogActions>

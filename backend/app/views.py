@@ -185,14 +185,15 @@ class RelatorioViewSet(viewsets.ViewSet):
     
     @action(detail=False, methods=['get'])
     def pdf(self, request):
-        materiais = Material.objects.all()
+        materiais = History.objects.all()
         buffer = io.BytesIO()
         p = canvas.Canvas(buffer)
         p.drawString(100, 750, "Relatório de Materiais")
 
         y = 700
         for material in materiais:
-            p.drawString(100, y, f"{material.serial} - {material.name} - {material.material_type}")
+            formatted_date = material.date.strftime('%d/%m/%Y')
+            p.drawString(100, y, f"{material.id} - {material.material_serial} - {material.material} - {material.action} - {formatted_date}")
             y -= 20
 
         p.save()
@@ -201,14 +202,15 @@ class RelatorioViewSet(viewsets.ViewSet):
 
     @action(detail=False, methods=['get'])
     def xlsx(self, request):
-        materiais = Material.objects.all()
+        materiais = History.objects.all()
         wb = openpyxl.Workbook()
         ws = wb.active
         ws.title = "Materiais"
 
-        ws.append(["Serial", "Nome", "Tipo", "Validade"])
+        ws.append(["ID", "Serial", "Nome", "Ação", "Data", "Passagens"])
         for material in materiais:
-            ws.append([material.serial, material.name, material.material_type, material.expiration_date])
+            formatted_date = material.date.strftime('%d/%m/%Y')
+            ws.append([material.id, material.material_serial, material.material, material.action, formatted_date, material.passage_count])
 
         response = HttpResponse(content_type="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet")
         response["Content-Disposition"] = 'attachment; filename="relatorio_materiais.xlsx"'
