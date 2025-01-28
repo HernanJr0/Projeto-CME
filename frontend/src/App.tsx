@@ -74,6 +74,23 @@ function PublicRoute({ children }: ChildrenProps) {
 
 function PrivateRoutes() {
 	const [open, setOpen] = React.useState(false);
+	const auth = useContext(AuthContext);
+
+	if (!auth) {
+		throw new Error("Erro no AuthContext.");
+	}
+
+	if (auth.loading) return <div>Carregando...</div>;
+
+	const userRole = auth.user?.role;
+
+	const hasAccess = (route: string) => {
+		if (userRole === "administrativo") return true;
+		if (userRole === "tecnico")
+			return ["materials", "processing"].includes(route);
+		if (userRole === "enfermeiro") return ["reports"].includes(route);
+		return false;
+	};
 
 	return (
 		<>
@@ -95,10 +112,16 @@ function PrivateRoutes() {
 				<Routes>
 					<Route path="/" element={<InternalLayout />}>
 						<Route path="dashboard" element={<Dashboard />} />
-						<Route path="users" element={<Users />} />
-						<Route path="reports" element={<Reports />} />
-						<Route path="materials" element={<Materials />} />
-						<Route path="processing" element={<Processing />} />
+						{hasAccess("users") && <Route path="users" element={<Users />} />}
+						{hasAccess("reports") && (
+							<Route path="reports" element={<Reports />} />
+						)}
+						{hasAccess("materials") && (
+							<Route path="materials" element={<Materials />} />
+						)}
+						{hasAccess("processing") && (
+							<Route path="processing" element={<Processing />} />
+						)}
 					</Route>
 				</Routes>
 			</PrivateRoute>

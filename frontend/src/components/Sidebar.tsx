@@ -110,7 +110,18 @@ function Sidebar() {
 		return null;
 	}
 
-	const sidebarSections = [
+	const userRole = auth.user?.role;
+
+	const hasAccess = (url: string) => {
+		if (url === "/dashboard") return true;
+		if (userRole === "administrativo") return true;
+		if (userRole === "tecnico")
+			return ["/materials", "/processing"].includes(url);
+		if (userRole === "enfermeiro") return ["/reports"].includes(url);
+		return false;
+	};
+
+	const filteredSidebarSections = [
 		{
 			title: "Home",
 			items: [
@@ -161,7 +172,12 @@ function Sidebar() {
 				},
 			],
 		},
-	];
+	]
+		.map((section) => ({
+			...section,
+			items: section.items.filter((item) => hasAccess(item.url)),
+		}))
+		.filter((section) => section.items.length > 0);
 
 	return (
 		<Box
@@ -187,7 +203,7 @@ function Sidebar() {
 			<Box sx={{ padding: "1rem" }}>
 				<Divider sx={{ mb: 2 }} />
 
-				{sidebarSections.map((section, index) => (
+				{filteredSidebarSections.map((section, index) => (
 					<SidebarSection key={index} {...section} />
 				))}
 

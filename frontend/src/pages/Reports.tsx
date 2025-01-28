@@ -50,7 +50,7 @@ export default function Reports() {
 		{
 			field: "material",
 			headerName: "Material",
-			width: 250,
+			width: 240,
 			renderCell: (params: GridRenderCellParams) => <>{params.row.material}</>,
 		},
 		{
@@ -62,7 +62,7 @@ export default function Reports() {
 		{
 			field: "date",
 			headerName: "Data e Hora",
-			width: 200,
+			width: 170,
 			renderCell: (params: GridRenderCellParams) => (
 				<>{new Date(params.row.date).toLocaleString()}</>
 			),
@@ -82,6 +82,12 @@ export default function Reports() {
 			renderCell: (params: GridRenderCellParams) => (
 				<>{params.row.user_details.username}</>
 			),
+		},
+		{
+			field: "failures",
+			headerName: "Falhas",
+			width: 70,
+			renderCell: (params: GridRenderCellParams) => <>{params.row.failure_count}</>,
 		},
 	];
 
