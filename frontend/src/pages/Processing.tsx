@@ -1,4 +1,4 @@
-import { useContext, useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import {
 	Typography,
 	Box,
@@ -15,7 +15,6 @@ import {
 	ListRounded,
 } from "@mui/icons-material";
 import { Failure, Process } from "../types";
-import { AuthContext } from "../context/AuthContext";
 import {
 	createProcess,
 	deleteProcess,
@@ -33,8 +32,6 @@ export default function Processing() {
 	const [processes, setProcesses] = useState<Process[]>([]);
 	const [loading, setLoading] = useState(true);
 	const [editProcess, setEditProcess] = useState<Process | null>(null);
-
-	const auth = useContext(AuthContext);
 
 	useEffect(() => {
 		const loadProcesses = async () => {
@@ -237,7 +234,6 @@ export default function Processing() {
 						display: "flex",
 						alignItems: "center",
 						justifyContent: "space-between",
-
 					}}
 				>
 					<Tooltip title="Detalhes do Processo" arrow>
@@ -300,16 +296,14 @@ export default function Processing() {
 						<ErrorOutline sx={{ marginRight: 1 }} />
 						Declarar Falha
 					</Button>
-					{auth?.user?.role === "administrativo" && (
-						<Button
-							variant="contained"
-							color="primary"
-							onClick={() => setOpenProcessing(true)}
-						>
-							<AddOutlined sx={{ marginRight: 1 }} />
-							Iniciar Processo
-						</Button>
-					)}
+					<Button
+						variant="contained"
+						color="primary"
+						onClick={() => setOpenProcessing(true)}
+					>
+						<AddOutlined sx={{ marginRight: 1 }} />
+						Iniciar Processo
+					</Button>
 				</Box>
 			</Box>
 
