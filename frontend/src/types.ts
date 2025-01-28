@@ -23,6 +23,7 @@ export interface Process {
 	start_date?: string;
 	end_date?: string | null;
 	responsible?: number | null;
+	quantity?: number;
 }
 
 export interface Failure {
@@ -41,7 +42,13 @@ export interface Tracking {
 
 export interface History {
 	id: number;
-	material_serial: number;
+	material_serial: string;
+	passage_count: number;
+	step: string;
 	action: string;
 	date: string;
+	user_details: {
+		id: number;
+		username: string;
+	};
 }

@@ -6,14 +6,14 @@ import {
 	Typography,
 	useTheme,
 } from "@mui/material";
-import { useNavigate } from "react-router-dom";
+import { useLocation, useNavigate } from "react-router-dom";
 
 import {
-	DashboardRounded,
-	DescriptionRounded,
-	GroupsRounded,
-	HourglassBottomRounded,
-	InventoryRounded,
+	DashboardOutlined,
+	DescriptionOutlined,
+	GroupsOutlined,
+	HourglassEmptyOutlined,
+	InventoryOutlined,
 	LogoutRounded,
 } from "@mui/icons-material";
 import { useContext } from "react";
@@ -21,11 +21,15 @@ import { AuthContext } from "../context/AuthContext";
 
 interface SidebarItemProps {
 	label: string;
+	url: string;
 	icon?: React.ReactNode;
 	onClick?: () => void;
 }
 
-function SidebarItem({ label, icon, onClick }: SidebarItemProps) {
+function SidebarItem({ label, icon, url, onClick }: SidebarItemProps) {
+	const theme = useTheme();
+	const location = useLocation();
+
 	return (
 		<Tooltip
 			title={label}
@@ -40,6 +44,8 @@ function SidebarItem({ label, icon, onClick }: SidebarItemProps) {
 					justifyContent: "flex-start",
 					textTransform: "none",
 					marginBottom: "0.5rem",
+					backgroundColor:
+						location.pathname === url ? theme.palette.primary.main : undefined,
 				}}
 				onClick={onClick}
 			>
@@ -49,6 +55,10 @@ function SidebarItem({ label, icon, onClick }: SidebarItemProps) {
 							display: "flex",
 							alignItems: "center",
 							marginRight: "0.5rem",
+
+							"& svg": {
+								fill: location.pathname === url ? "#fff" : undefined,
+							},
 						}}
 					>
 						{icon}
@@ -61,6 +71,7 @@ function SidebarItem({ label, icon, onClick }: SidebarItemProps) {
 						whiteSpace: "nowrap",
 						fontSize: "0.875rem",
 						fontWeight: 500,
+						color: location.pathname === url ? "#fff" : undefined,
 					}}
 				>
 					{label}
@@ -72,7 +83,12 @@ function SidebarItem({ label, icon, onClick }: SidebarItemProps) {
 
 const SidebarSection: React.FC<{
 	title: string;
-	items: { label: string; icon?: React.ReactNode; onClick?: () => void }[];
+	items: {
+		url: string;
+		label: string;
+		icon?: React.ReactNode;
+		onClick?: () => void;
+	}[];
 }> = ({ title, items }) => (
 	<Box sx={{ mb: 3 }}>
 		<Typography variant="subtitle1" fontWeight={600} sx={{ mb: 1 }}>
@@ -100,7 +116,8 @@ function Sidebar() {
 			items: [
 				{
 					label: "Dashboard",
-					icon: <DashboardRounded />,
+					url: "/dashboard",
+					icon: <DashboardOutlined />,
 					onClick: () => navigate("/dashboard"),
 				},
 			],
@@ -110,7 +127,8 @@ function Sidebar() {
 			items: [
 				{
 					label: "Gerenciamento de Usuários",
-					icon: <GroupsRounded />,
+					url: "/users",
+					icon: <GroupsOutlined />,
 					onClick: () => navigate("/users"),
 				},
 			],
@@ -120,12 +138,14 @@ function Sidebar() {
 			items: [
 				{
 					label: "Materiais",
-					icon: <InventoryRounded />,
+					url: "/materials",
+					icon: <InventoryOutlined />,
 					onClick: () => navigate("/materials"),
 				},
 				{
 					label: "Processos",
-					icon: <HourglassBottomRounded />,
+					url: "/processing",
+					icon: <HourglassEmptyOutlined />,
 					onClick: () => navigate("/processing"),
 				},
 			],
@@ -135,7 +155,8 @@ function Sidebar() {
 			items: [
 				{
 					label: "Visualizar e Exportar",
-					icon: <DescriptionRounded />,
+					url: "/reports",
+					icon: <DescriptionOutlined />,
 					onClick: () => navigate("/reports"),
 				},
 			],
@@ -152,9 +173,23 @@ function Sidebar() {
 				overflowY: "auto",
 				borderRight: `1px solid ${theme.palette.divider}`,
 				backgroundColor: theme.palette.background.paper,
+				display: "flex",
+				flexDirection: "column",
 			}}
 		>
-			<Box sx={{ padding: "1rem 0 0", textAlign: "center" }}>
+			{/* <img
+				src="/cme-icon.png"
+				alt="placeholder"
+				style={{
+					width: "100px",
+					height: "100px",
+					borderRadius: "100%",
+
+					textAlign: "center",
+					alignSelf: "center",
+				}}
+			/>{/*  */}
+			<Box sx={{ textAlign: "center", margin: "1rem auto" }}>
 				<Typography variant="h6">CME</Typography>
 				<Typography variant="subtitle1">
 					Central de Materiais e Esterilização

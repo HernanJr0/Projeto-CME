@@ -46,7 +46,15 @@ class FailureSerializer(serializers.ModelSerializer):
 class HistorySerializer(serializers.ModelSerializer):
     user = serializers.PrimaryKeyRelatedField(queryset=CustomUser.objects.all())
     
+    user_details = serializers.SerializerMethodField()
+    
     class Meta:
         model = History
         fields = '__all__'
         read_only_fields = ['action']
+
+    def get_user_details(self, obj):
+        return {
+            'id': obj.user.id,
+            'username': obj.user.username
+        }

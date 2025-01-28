@@ -1,7 +1,7 @@
-import { Falha } from "../types";
+import { Failure } from "../types";
 import api from "../utils/api";
 
-export const getFailure = async (serial: string): Promise<Falha[]> => {
+export const getFailure = async (serial: string): Promise<Failure[]> => {
 	try {
 		const response = await api.get(`failures/${serial}`);
 		return response.data;
@@ -13,10 +13,10 @@ export const getFailure = async (serial: string): Promise<Falha[]> => {
 
 export const postFailure = async (
 	serial: string,
-	falha: Falha
-): Promise<Falha> => {
+	falha: Failure
+): Promise<Failure> => {
 	try {
-		const response = await api.post(`failures/${serial}`, falha);
+		const response = await api.post(`failures/${serial}/`, falha);
 		return response.data;
 	} catch (error) {
 		console.error("Erro ao registrar falha:", error);

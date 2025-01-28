@@ -74,7 +74,8 @@ export default function Processing() {
 	const handleSave = async (
 		material: number | null,
 		step: string,
-		responsible: number | null
+		responsible: number | null,
+		quantity: number | null
 	) => {
 		if (editProcess) {
 			try {
@@ -82,6 +83,7 @@ export default function Processing() {
 					...editProcess,
 					material: material,
 					step: step,
+					quantity: quantity || 1,
 				};
 				await updateProcess(updatedProcess);
 				setOpen(false);
@@ -97,6 +99,7 @@ export default function Processing() {
 					material: material,
 					step: step,
 					responsible: responsible,
+					quantity: quantity || 1,
 				};
 
 				await createProcess(newProcess);
@@ -112,6 +115,14 @@ export default function Processing() {
 	};
 
 	const columns: GridColDef[] = [
+		{
+			field: "quantity",
+			headerName: "Quantidade",
+			width: 100,
+			renderCell: (params: GridRenderCellParams) => (
+				<>{params.row.quantity}</>
+			),
+		},
 		{
 			field: "serial",
 			headerName: "Serial",
@@ -141,20 +152,20 @@ export default function Processing() {
 		{
 			field: "start_date",
 			headerName: "Data de Início",
-			width: 200,
+			width: 150,
 			renderCell: (params: GridRenderCellParams) =>
-				new Date(params.value).toLocaleString(),
+				new Date(params.value).toLocaleDateString(),
 		},
 		{
 			field: "end_date",
 			headerName: "Data de Fim",
-			width: 200,
+			width: 150,
 			renderCell: (params: GridRenderCellParams) => {
 				return (
 					<>
 						{params.row.end_date === null
 							? "-"
-							: new Date(params.row.end_date).toLocaleString()}
+							: new Date(params.row.end_date).toLocaleDateString()}
 					</>
 				);
 			},
@@ -254,7 +265,7 @@ export default function Processing() {
 						initialState={{
 							pagination: {
 								paginationModel: {
-									pageSize: 5,
+									pageSize: 10,
 									page: 0,
 								},
 							},
@@ -290,6 +301,7 @@ export default function Processing() {
 								start_date: editProcess.start_date,
 								end_date: editProcess.end_date,
 								responsible: editProcess.responsible,
+								quantity: editProcess.quantity,
 						  }
 						: undefined
 				}

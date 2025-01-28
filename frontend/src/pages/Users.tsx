@@ -189,7 +189,7 @@ export default function Users() {
 						initialState={{
 							pagination: {
 								paginationModel: {
-									pageSize: 5,
+									pageSize: 10,
 									page: 0,
 								},
 							},

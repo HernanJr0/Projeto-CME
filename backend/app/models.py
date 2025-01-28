@@ -46,25 +46,50 @@ class Process(models.Model):
         ('distribuicao', 'Distribuição'),
     ]
     material = models.ForeignKey(Material, on_delete=models.CASCADE, related_name="processos")
+    quantity = models.IntegerField()
     step = models.CharField(max_length=50, choices=STEPS)
     start_date = models.DateTimeField(auto_now_add=True)
     end_date = models.DateTimeField(null=True, blank=True)
     responsible = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE)
-    
+
     def save(self, *args, **kwargs):
         is_update = self.pk is not None
-        
-        if self.step == 'distribuicao' and not self.end_date:
-            self.end_date = timezone.now()
-        
+
+        if not is_update:
+            History.objects.create(
+                user=self.responsible,
+                material=self.material.name,
+                material_serial=self.material.serial,
+                action=f"Iniciado: {self.step.capitalize()}",
+                step=self.step,
+                passage_count=1
+            )
+        else:
+            last_history = History.objects.filter(material_serial=self.material.serial, step=self.step).last()
+            if last_history:
+                last_history.passage_count += 1
+                last_history.save()
+            else:
+                History.objects.create(
+                    user=self.responsible,
+                    material=self.material.name,
+                    material_serial=self.material.serial,
+                    action=f"Passagem para: {self.step.capitalize()}",
+                    step=self.step,
+                    passage_count=1,
+                    date=timezone.now()
+                )
+
+            if self.step == 'distribuicao' and not self.end_date:
+                self.end_date = timezone.now()
+                History.objects.filter(
+                    material_serial=self.material.serial,
+                    step=self.step
+                ).update(action=f"Finalizado: {self.step.capitalize()}")
+
         super().save(*args, **kwargs)
-        
-        History.objects.create(
-            user=self.responsible,
-            material_serial=self.material.serial,
-            action=f"{'Recebimento' if not is_update else 'Atualização'}: {self.material.name.capitalize()} - {self.step.capitalize()}"
-        )
-    
+
+
     def __str__(self):
         return f"{self.material} - {self.step}"
 
@@ -85,9 +110,12 @@ class Failure(models.Model):
 
 class History(models.Model):
     user = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE)
+    material = models.CharField(max_length=255, blank=True)
     material_serial = models.CharField(max_length=255, blank=True)
     action = models.CharField(max_length=255)
     date = models.DateTimeField(auto_now_add=True)
+    step = models.CharField(max_length=50, choices=Process.STEPS)
+    passage_count = models.IntegerField(default=0)
     
     def __str__(self):
         return f"{self.user} - {self.action}"

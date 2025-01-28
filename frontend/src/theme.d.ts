@@ -7,6 +7,9 @@ declare module "@mui/material/styles" {
 				primary: string;
 				secondary: string;
 			};
+			icon: {
+				primary: string;
+			};
 		};
 	}
 
@@ -15,6 +18,9 @@ declare module "@mui/material/styles" {
 			background?: {
 				primary?: string;
 				secondary?: string;
+			};
+			icon?: {
+				primary?: string;
 			};
 		};
 	}

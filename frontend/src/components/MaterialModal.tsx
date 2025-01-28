@@ -131,7 +131,7 @@ export default function MaterialModal({
 					Cancelar
 				</Button>
 				<Button color="primary" onClick={handleSave}>
-					Cadastrar
+					Continuar
 				</Button>
 			</DialogActions>
 		</Dialog>

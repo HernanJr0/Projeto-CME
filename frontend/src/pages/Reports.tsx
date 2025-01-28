@@ -41,17 +41,22 @@ export default function Reports() {
 		},
 		{
 			field: "material_serial",
-			headerName: "Serial do Material",
+			headerName: "Serial",
 			width: 250,
 			renderCell: (params: GridRenderCellParams) => {
-				console.log(params.row);
 				return <>{params.row.material_serial}</>;
 			},
 		},
 		{
+			field: "material",
+			headerName: "Material",
+			width: 250,
+			renderCell: (params: GridRenderCellParams) => <>{params.row.material}</>,
+		},
+		{
 			field: "action",
 			headerName: "Ação",
-			width: 300,
+			width: 250,
 			renderCell: (params: GridRenderCellParams) => <>{params.row.action}</>,
 		},
 		{
@@ -60,6 +65,22 @@ export default function Reports() {
 			width: 200,
 			renderCell: (params: GridRenderCellParams) => (
 				<>{new Date(params.row.date).toLocaleString()}</>
+			),
+		},
+		{
+			field: "passage_count",
+			headerName: "Passagens",
+			width: 100,
+			renderCell: (params: GridRenderCellParams) => (
+				<>{params.row.passage_count}</>
+			),
+		},
+		{
+			field: "user",
+			headerName: "Responsável",
+			width: 150,
+			renderCell: (params: GridRenderCellParams) => (
+				<>{params.row.user_details.username}</>
 			),
 		},
 	];
@@ -127,7 +148,7 @@ export default function Reports() {
 						initialState={{
 							pagination: {
 								paginationModel: {
-									pageSize: 5,
+									pageSize: 10,
 									page: 0,
 								},
 							},

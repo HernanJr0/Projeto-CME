@@ -2,9 +2,6 @@ import { StrictMode, useEffect, useState } from "react";
 import { createRoot } from "react-dom/client";
 import App from "./App.tsx";
 
-/* import "@fontsource/nunito-sans/400.css";
-import "@fontsource/nunito-sans/500.css";
-import "@fontsource/nunito-sans/700.css"; */
 import { CssBaseline, ThemeProvider, createTheme } from "@mui/material";
 
 const Root = () => {
@@ -21,14 +18,17 @@ const Root = () => {
 			background: {
 				primary: mode === "light" ? "#fff" : "#2D3748",
 			},
+			icon: {
+				primary: mode === "light" ? "#2563EB" : "#F59E0B",
+			}
 		},
 		palette: {
 			mode: mode,
 			primary: {
-				main: "#2B6CB0",
+				main: "#5082EF",
 			},
 			secondary: {
-				main: "#F6AD55",
+				main: "#F59E0B",
 			},
 			background: {
 				default: mode === "light" ? "#fff" : "#0f172a",
@@ -70,7 +70,7 @@ const Root = () => {
 				styleOverrides: {
 					root: {
 						borderRadius: 8,
-						backgroundColor: mode === "light" ? "#fff" : "#1A202C",
+						backgroundColor: mode === "light" ? "#fff" : "#0f172a",
 						boxShadow:
 							mode === "light"
 								? "0px 4px 32px rgba(0, 0, 0, 0.1)"
@@ -89,10 +89,10 @@ const Root = () => {
 								borderColor: mode === "light" ? "#E2E8F0" : "#4A5568",
 							},
 							"&:hover fieldset": {
-								borderColor: mode === "light" ? "#2B6CB0" : "#F6AD55",
+								borderColor: mode === "light" ? "#2563EB" : "#F59E0B",
 							},
 							"&.Mui-focused fieldset": {
-								borderColor: mode === "light" ? "#2B6CB0" : "#F6AD55",
+								borderColor: mode === "light" ? "#2563EB" : "#F59E0B",
 							},
 						},
 					},
@@ -108,10 +108,10 @@ const Root = () => {
 								borderColor: mode === "light" ? "#E2E8F0" : "#4A5568",
 							},
 							"&:hover fieldset": {
-								borderColor: mode === "light" ? "#2B6CB0" : "#F6AD55",
+								borderColor: mode === "light" ? "#2563EB" : "#F59E0B",
 							},
 							"&.Mui-focused fieldset": {
-								borderColor: mode === "light" ? "#2B6CB0" : "#F6AD55",
+								borderColor: mode === "light" ? "#2563EB" : "#F59E0B",
 							},
 						},
 					},
